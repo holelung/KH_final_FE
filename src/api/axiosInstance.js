@@ -1,7 +1,6 @@
 import axios from "axios";
-import { useContext } from "react";
 import { toast } from "react-toastify"
-import { AuthContext } from "../Context/AuthContext";
+
 
 const API_URL = window.ENV?.API_URL;
 
@@ -14,6 +13,8 @@ const axiosInstance = axios.create({
 });
 
 // 요청 인터셉터: accessToken 삽입
+// Token 안넣는 법
+// apiService.get("/public/notice", { auth: false });
 axiosInstance.interceptors.request.use(
   (config) => {
     const requireAuth = config.auth !== false;
@@ -24,8 +25,9 @@ axiosInstance.interceptors.request.use(
       if (tokens) {
         config.headers.Authorization = `Bearer ${tokens.accessToken}`;
       }
-      return config;
     }
+    
+    return config;
   },
   (error) => Promise.reject(error)
 )
@@ -42,19 +44,23 @@ axiosInstance.interceptors.response.use(
     }
   
 
-    switch (res?.data.code) {
-      case E401:
+    switch (code) {
+      case "E401":
         toast.error("로그인이 만료되었습니다.");
         sessionStorage.clear();
         window.location.href = "/login";
         break;
-      case E100:
+      case "E100":
         toast.error("아이디가 중복되었습니다.");
         break;
-      case E101:
+      case "E101":
         toast.error("이메일이 중복되었습니다.");
         break;
+      case "E500":
+        console.log(message);
     }
     return Promise.reject(error);
   }
 )
+
+export default axiosInstance;
