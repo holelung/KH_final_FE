@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify"
+import { TokenMissingError } from "./errors";
 
 
 const API_URL = window.ENV?.API_URL;
@@ -21,12 +22,18 @@ axiosInstance.interceptors.request.use(
     
     if (requireAuth) {
       const raw = sessionStorage.getItem("tokens");
+
+      // token 이 없을경우 예외처리
+      // if (!raw) {
+      //   return Promise.reject(new TokenMissingError());
+      // }
+
       const tokens = raw ? JSON.parse(raw) : null;
       if (tokens) {
         config.headers.Authorization = `Bearer ${tokens.accessToken}`;
       }
     }
-    
+
     return config;
   },
   (error) => Promise.reject(error)
