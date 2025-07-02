@@ -1,5 +1,11 @@
+import { useContext } from "react";
+import { AuthContext } from "../../../Context/AuthContext";
+
 const Navbar = () => {
+  const {logout} = useContext(AuthContext);
+
   return (
+
     <>
       <div className="absolute top-0 left-0 w-48 h-full z-10 bg-saintrablue font-PretendardM text-white flex flex-col justify-start box-border">
         <section className="w-full h-32 p-4">로고</section>
@@ -28,7 +34,7 @@ const Navbar = () => {
         <section className="w-full h-32 p-4 font-PyeojinGothicB text-lg flex flex-col justify-center">
           <div className="w-full h-8 flex justify-start items-center gap-2">
             <div className="size-8 flex justify-center items-center">1</div>
-            <div className="flex justify-center items-center">로그아웃</div>
+            <div className="flex justify-center items-center" onClick={() => logout()}>로그아웃</div>
           </div>
         </section>
       </div>
