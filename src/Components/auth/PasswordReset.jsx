@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const ReissuePassword = () => {
+const PasswordReset = () => {
   const navi = useNavigate();
 
 
@@ -17,17 +17,17 @@ const ReissuePassword = () => {
       <section className="size-full mt-12 font-PyeojinGothicB flex flex-col gap-6">
         <div className="px-24">
           <input
-            id="username"
-            type="text"
-            placeholder="USERNAME"
+            id="password"
+            type="password"
+            placeholder="NEW PASSWORD"
             className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg"
           />
         </div>
         <div className="px-24">
           <input
-            id="email"
-            type="email"
-            placeholder="EMAIL"
+            id="confirmPassword"
+            type="password"
+            placeholder="CONFIRM NEW PASSWORD"
             className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg"
           />
         </div> 
@@ -40,4 +40,4 @@ const ReissuePassword = () => {
   );
 }
 
-export default ReissuePassword;
+export default PasswordReset;

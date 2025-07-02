@@ -68,12 +68,12 @@ const Login = () => {
       <section className="my-12 text-lg text-gray-500 flex gap-4">
         <div 
           onClick={() => navi('/authenticator/registration')}
-          className="cursor-pointer select-none"
+          className="cursor-pointer select-none hover:text-gray-600 active:scale-95"
         >Registration</div>
         <div className="select-none">|</div>
         <div 
           onClick={() => navi('/authenticator/reissue-password')}
-          className="cursor-pointer select-none"
+          className="cursor-pointer select-none hover:text-gray-600 active:scale-95"
         >Reissue Password</div>
       </section>
     </>

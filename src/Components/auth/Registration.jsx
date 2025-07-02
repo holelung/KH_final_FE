@@ -364,7 +364,7 @@ const Registration = () => {
           가입하기
         </button>
       </section>
-      <section className="my-12 text-lg text-gray-500">
+      <section className="my-12 text-lg text-gray-500 cursor-pointer hover:text-gray-600 active:scale-95 select-none">
         <div onClick={() => navi("/authenticator")}>Go Back to Authenticator</div>
       </section>
     </>
