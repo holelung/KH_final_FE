@@ -18,10 +18,8 @@ const Login = () => {
       loginInfo,
       { auth: false }
     ).then(response => {
-      login(response.data.data.loginInfo, response.data.data.tokens);
-      alert(response.data.message);
-      navi("/");
       console.log(response);
+      login(response.data.data.loginInfo, response.data.data.tokens);
     });
   }
   

@@ -1,5 +1,6 @@
 import { useState, useEffect, createContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
@@ -36,6 +37,9 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.setItem("tokens", JSON.stringify(tokens));
     console.log(JSON.stringify(tokens));
     console.log(JSON.stringify(loginInfo));
+    
+    toast.success("로그인 되었습니다.");
+    navi("/");
   };
 
   const logout = () => {
@@ -47,6 +51,8 @@ export const AuthProvider = ({ children }) => {
     });
     sessionStorage.removeItem("loginInfo");
     sessionStorage.removeItem("tokens");
+    navi("/authenticator");
+    toast.info("로그아웃 되었습니다.");
   };
 
   return <AuthContext.Provider value={{ auth, login, logout }}>{children}</AuthContext.Provider>;
