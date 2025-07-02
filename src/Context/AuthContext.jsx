@@ -1,5 +1,5 @@
-import { useState, useEffect, createContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, createContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -47,12 +47,8 @@ export const AuthProvider = ({ children }) => {
     });
     sessionStorage.removeItem("loginInfo");
     sessionStorage.removeItem("tokens");
-    navi('/');
+    navi("/");
   };
 
-  return (
-    <AuthContext.Provider value={{ auth, login, logout }} >
-      {children}
-    </AuthContext.Provider>
-  )
-}
+  return <AuthContext.Provider value={{ auth, login, logout }}>{children}</AuthContext.Provider>;
+};
