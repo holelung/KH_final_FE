@@ -1,25 +1,129 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { apiService } from "../../api/apiService";
 
-const BoardList = (props) => {
-  const [boardType, setBoardType] = useState(props);
-  const [sortBy, setSortBy] = useState("desc");
-  const [condition, setCondition] = useState("username");
+const BoardList = () => {
+  const [type, setType] = useState("");
+  const [page, setPage] = useState("");
+  const [condition, setCondition] = useState("title");
   const [keyword, setKeyword] = useState("");
+  const [boardTitle, setBoardTitle] = useState("");
+  const [boardList, setBoardList] = useState([]);
+  const [startButton, setStartButton] = useState(1);
+  const [endButton, setEndButton] = useState(1);
+  const [maxPage, setMaxPage] = useState(1);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const navi = useNavigate();
+
+  useEffect(() => {
+    setType(searchParams.get("type"));
+    setPage(searchParams.get("page"));
+
+    if (searchParams.get("condition")) {
+      setCondition(searchParams.get("condition"));
+    }
+
+    if (searchParams.get("keyword")) {
+      setKeyword(searchParams.get("keyword"));
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (type && page) {
+      switch (type) {
+        case "bulletin":
+          setBoardTitle("공지사항");
+          break;
+        case "free":
+          setBoardTitle("자유게시판");
+          break;
+        case "anonymous":
+          setBoardTitle("익명게시판");
+          break;
+        default:
+          setBoardTitle("부서게시판");
+      }
+      apiService
+        .get(`http://localhost:8080/api/boards?${searchParams.toString()}`)
+        .then((res) => {
+          console.log(res.data);
+          setBoardList(res.data.data.boardList);
+          setStartButton(res.data.data.startButton);
+          setEndButton(res.data.data.endButton);
+          setMaxPage(res.data.data.maxPage);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [type, page]);
+
+  const handleCondition = (e) => {
+    setCondition(e.target.value);
+  };
+
+  const handleKeyword = (e) => {
+    setKeyword(e.target.value);
+  };
+
+  const handleSearch = () => {
+    if (!condition || !keyword) {
+      alert("검색 조건 또는 검색어 누락");
+      return;
+    }
+
+    searchParams.set("page", 1);
+    searchParams.set("condition", condition);
+    searchParams.set("keyword", keyword);
+    setSearchParams(searchParams);
+
+    apiService
+      .get(`http://localhost:8080/api/boards?${searchParams.toString()}`)
+      .then((res) => {
+        console.log(res.data);
+        setBoardList(res.data.data.boardList);
+        setStartButton(res.data.data.startButton);
+        setEndButton(res.data.data.endButton);
+        setMaxPage(res.data.data.maxPage);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handlePage = (e) => {
+    searchParams.set("page", e.target.innerHTML);
+    setSearchParams(searchParams);
+    setPage(parseInt(e.target.innerHTML));
+  };
+
   return (
     <>
       <div className="w-full min-h-full flex flex-col justify-between">
         <section className="font-PyeojinGothicB flex justify-between items-center">
-          <div className="ml-1 text-3xl">게시판 제목</div>
-          <div className="mr-1 flex items-center gap-4">
-            <div className="text-xl">정렬 기준</div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="p-1 border-2 border-gray-500 rounded-sm text-lg font-PyeojinGothicM text-center"
+          <div
+            onClick={() => {
+              if (page !== 1) {
+                searchParams.set("page", 1);
+                setSearchParams(searchParams);
+                setPage(1);
+              }
+            }}
+            className="ml-1 text-3xl cursor-pointer"
+          >
+            {boardTitle}
+          </div>
+          <div>
+            <button
+              onClick={() => {
+                navi("/");
+              }}
+              className="px-2 py-1 mr-1 border-2 rounded-sm text-lg cursor-pointer"
             >
-              <option value="desc">최신순</option>
-              <option value="asc">등록순</option>
-            </select>
+              글 쓰기
+            </button>
           </div>
         </section>
         <section className="bg-saintralightblue rounded-md">
@@ -33,88 +137,28 @@ const BoardList = (props) => {
               </tr>
             </thead>
             <tbody className="font-PretendardM text-center">
-              <tr>
-                <td>1</td>
-                <td>게시물 제목</td>
-                <td>realname(username)</td>
-                <td>0000.00.00</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>5</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>6</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>7</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>8</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>9</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>10</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>11</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
-              <tr>
-                <td>12</td>
-                <td>게시물 제목</td>
-                <td>작성자 이름</td>
-                <td>00:00</td>
-              </tr>
+              {boardList.length > 0 ? (
+                boardList.map((board) => (
+                  <tr key={board.id}>
+                    <td>{board.id}</td>
+                    <td>{board.title}</td>
+                    <td>
+                      {board.realname}({board.username})
+                    </td>
+                    <td>{board.createDate}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4}>게시물이 없습니다</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </section>
         <section className="h-fit font-PyeojinGothicB flex justify-between items-center">
           <div className="ml-1 flex justify-start gap-1">
-            <select
-              value={condition}
-              onChange={(e) => setCondition(e.target.value)}
-              className="border-2 border-gray-500 rounded-sm text-lg font-PyeojinGothicM text-center"
-            >
+            <select value={condition} onChange={handleCondition} className="border-2 border-gray-500 rounded-sm text-lg font-PyeojinGothicM text-center">
               <option value="title">제목</option>
               <option value="content">내용</option>
               <option value="writer">작성자</option>
@@ -122,26 +166,25 @@ const BoardList = (props) => {
             <input
               type="text"
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={handleKeyword}
               className="w-1/2 h-full px-2 py-1 font-PretendardM text-lg border-2 border-gray-500 rounded-sm"
             />
-            <button type="button" className="px-2 bg-saintragreen rounded-sm text-white">
+            <button type="button" onClick={handleSearch} className="px-2 bg-saintragreen rounded-sm text-white cursor-pointer">
               검색
             </button>
           </div>
           <div className="mr-1 text-gray-500 flex justify-center gap-1">
-            <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">이전</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">1</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">2</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">3</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">4</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">5</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">6</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">7</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">8</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">9</div>
-            <div className="size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">10</div>
-            <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">다음</div>
+            {startButton === 1 ? <></> : <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">이전</div>}
+            {[...Array(parseInt(maxPage))].map((n, index) => (
+              <div
+                key={index}
+                onClick={handlePage}
+                className={`size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center ${page == index + 1 ? `bg-saintrablue` : ``}`}
+              >
+                {index + 1}
+              </div>
+            ))}
+            {endButton === maxPage ? <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">다음</div> : <></>}
           </div>
         </section>
       </div>

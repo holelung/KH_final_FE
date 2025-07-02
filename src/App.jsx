@@ -17,9 +17,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route
           element={
-            <AuthRoute>
-              <Includes />
-            </AuthRoute>
+            // <AuthRoute>
+            <Includes />
+            // </AuthRoute>
           }
         >
           <Route path="/" element={<DisplayArea children={<></>} />} />
