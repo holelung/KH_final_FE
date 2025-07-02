@@ -52,16 +52,8 @@ axiosInstance.interceptors.response.use(
   
 
     switch (code) {
-      case "E401":
-        toast.error("로그인이 만료되었습니다.");
-        sessionStorage.clear();
-        window.location.href = "/login";
-        break;
       case "E100":
-        toast.error("아이디가 중복되었습니다.");
-        break;
-      case "E101":
-        toast.error("이메일이 중복되었습니다.");
+        console.error("아이디가 중복되었습니다.");
         break;
       case "E500":
         console.log(message);

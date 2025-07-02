@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }) => {
     });
     sessionStorage.removeItem("loginInfo");
     sessionStorage.removeItem("tokens");
-    navi("/");
   };
 
   return <AuthContext.Provider value={{ auth, login, logout }}>{children}</AuthContext.Provider>;
