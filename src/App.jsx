@@ -27,9 +27,9 @@ function App() {
 
         <Route
           element={
-            <AuthRoute>
-              <Includes />
-            </AuthRoute>
+            // <AuthRoute>
+            <Includes />
+            // </AuthRoute>
           }
         >
           <Route path="/" element={<DisplayArea children={<></>} />} />
