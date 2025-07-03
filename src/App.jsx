@@ -5,9 +5,10 @@ import Authenticator from "./pages/auth/authenticator/Authenticator";
 import Register from "./pages/auth/register/Register";
 import DisplayArea from "./pages/include/displayarea/DisplayArea";
 import Test from "./pages/Home/Test";
-import BoardList from "./pages/board/BoardList";
+import BoardList from "./pages/board/boardlist/BoardList";
 import Includes from "./pages/include/includes/Includes";
 import AuthRoute from "./pages/auth/authroute/AuthRoute";
+import BoardEditer from "./pages/board/boardediter/BoardEditer";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<DisplayArea children={<></>} />} />
           <Route path="/test" element={<DisplayArea children={<Test />} />} />
           <Route path="/boards" element={<DisplayArea children={<BoardList />} />} />
+          <Route path="/boards/edit" element={<DisplayArea children={<BoardEditer />} />} />
         </Route>
       </Routes>
     </AuthProvider>

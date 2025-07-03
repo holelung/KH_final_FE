@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { apiService } from "../../api/apiService";
+import { apiService } from "../../../api/apiService";
 
 const BoardList = () => {
   const [type, setType] = useState("");
@@ -101,7 +101,7 @@ const BoardList = () => {
 
   return (
     <>
-      <div className="w-full min-h-full flex flex-col justify-between">
+      <div className="w-full min-h-full flex flex-col justify-start gap-2">
         <section className="font-PyeojinGothicB flex justify-between items-center">
           <div
             onClick={() => {
@@ -126,66 +126,76 @@ const BoardList = () => {
             </button>
           </div>
         </section>
-        <section className="bg-saintralightblue rounded-md">
-          <table className="table-fixed w-full border-separate border-spacing-4">
-            <thead className="font-PyeojinGothicB text-lg">
-              <tr>
-                <th className="w-1/8">번호</th>
-                <th className="w-4/8">제목</th>
-                <th className="w-2/8">작성자</th>
-                <th className="w-1/8">작성일</th>
-              </tr>
-            </thead>
-            <tbody className="font-PretendardM text-center">
-              {boardList.length > 0 ? (
-                boardList.map((board) => (
-                  <tr key={board.id}>
-                    <td>{board.id}</td>
-                    <td>{board.title}</td>
-                    <td>
-                      {board.realname}({board.username})
-                    </td>
-                    <td>{board.createDate}</td>
-                  </tr>
-                ))
-              ) : (
+        <section className="flex flex-col justify-between gap-2">
+          <section className="bg-saintralightblue rounded-md">
+            <table className="table-fixed w-full border-separate border-spacing-4">
+              <thead className="font-PyeojinGothicB text-lg">
                 <tr>
-                  <td colSpan={4}>게시물이 없습니다</td>
+                  <th className="w-1/8">번호</th>
+                  <th className="w-4/8">제목</th>
+                  <th className="w-2/8">작성자</th>
+                  <th className="w-1/8">작성일</th>
                 </tr>
+              </thead>
+              <tbody className="font-PretendardM text-center">
+                {boardList.length > 0 ? (
+                  boardList.map((board) => (
+                    <tr key={board.id}>
+                      <td>{board.id}</td>
+                      <td>{board.title}</td>
+                      <td>
+                        {board.realname}({board.username})
+                      </td>
+                      <td>{board.createDate}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4}>게시물이 없습니다</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </section>
+          <section className="h-fit font-PyeojinGothicB flex justify-between items-center">
+            <div className="ml-1 flex justify-start gap-1">
+              <select value={condition} onChange={handleCondition} className="border-2 border-gray-500 rounded-sm text-lg font-PyeojinGothicM text-center">
+                <option value="title">제목</option>
+                <option value="content">내용</option>
+                <option value="writer">작성자</option>
+              </select>
+              <input
+                type="text"
+                value={keyword}
+                onChange={handleKeyword}
+                className="w-1/2 h-full px-2 py-1 font-PretendardM text-lg border-2 border-gray-500 rounded-sm"
+              />
+              <button type="button" onClick={handleSearch} className="px-2 bg-saintragreen rounded-sm text-white cursor-pointer">
+                검색
+              </button>
+            </div>
+            <div className="mr-1 text-gray-500 flex justify-center gap-1">
+              {startButton === 1 ? (
+                <></>
+              ) : (
+                <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center cursor-pointer">이전</div>
               )}
-            </tbody>
-          </table>
-        </section>
-        <section className="h-fit font-PyeojinGothicB flex justify-between items-center">
-          <div className="ml-1 flex justify-start gap-1">
-            <select value={condition} onChange={handleCondition} className="border-2 border-gray-500 rounded-sm text-lg font-PyeojinGothicM text-center">
-              <option value="title">제목</option>
-              <option value="content">내용</option>
-              <option value="writer">작성자</option>
-            </select>
-            <input
-              type="text"
-              value={keyword}
-              onChange={handleKeyword}
-              className="w-1/2 h-full px-2 py-1 font-PretendardM text-lg border-2 border-gray-500 rounded-sm"
-            />
-            <button type="button" onClick={handleSearch} className="px-2 bg-saintragreen rounded-sm text-white cursor-pointer">
-              검색
-            </button>
-          </div>
-          <div className="mr-1 text-gray-500 flex justify-center gap-1">
-            {startButton === 1 ? <></> : <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">이전</div>}
-            {[...Array(parseInt(maxPage))].map((n, index) => (
-              <div
-                key={index}
-                onClick={handlePage}
-                className={`size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center ${page == index + 1 ? `bg-saintrablue` : ``}`}
-              >
-                {index + 1}
-              </div>
-            ))}
-            {endButton === maxPage ? <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center">다음</div> : <></>}
-          </div>
+              {[...Array(parseInt(maxPage))].map((n, index) => (
+                <div
+                  key={index}
+                  onClick={handlePage}
+                  className={`size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center cursor-pointer ${page == index + 1 ? `bg-saintrablue` : ``}`}
+                >
+                  {index + 1}
+                </div>
+              ))}
+              {endButton === maxPage ? (
+                <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center cursor-pointer">다음</div>
+              ) : (
+                <></>
+              )}
+            </div>
+          </section>
         </section>
       </div>
     </>

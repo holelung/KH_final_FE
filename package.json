@@ -12,8 +12,12 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
+    "quill": "^2.0.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-dropzone": "^14.3.8",
+    "react-quill-new": "^3.4.6",
+    "react-quilljs": "^2.0.5",
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
     "react-use-websocket": "^4.13.0",
