@@ -33,7 +33,7 @@ const Navbar = () => {
         <section className="w-full h-32 p-4 font-PyeojinGothicB text-lg flex flex-col justify-center">
           <div className="w-full h-8 flex justify-start items-center gap-2">
             <div className="size-8 flex justify-center items-center">1</div>
-            <div className="flex justify-center items-center" onClick={() => logout()}>로그아웃</div>
+            <div className="flex justify-center items-center cursor-pointer select-none" onClick={() => logout()}>로그아웃</div>
           </div>
         </section>
       </div>

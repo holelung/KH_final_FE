@@ -18,10 +18,8 @@ const Login = () => {
       loginInfo,
       { auth: false }
     ).then(response => {
-      login(response.data.data.loginInfo, response.data.data.tokens);
-      alert(response.data.message);
-      navi("/");
       console.log(response);
+      login(response.data.data.loginInfo, response.data.data.tokens);
     });
   }
   
@@ -63,17 +61,17 @@ const Login = () => {
         </div>
       </section>
       <section className="mt-12">
-        <button className="w-48 h-20 text-3xl text-white bg-saintragreen rounded-xl cursor-pointer" onClick={() => loginHandler()}>Login</button>
+        <button className="w-48 h-20 text-3xl text-white bg-saintragreen rounded-xl cursor-pointer hover:opacity-90 active:scale-95" onClick={() => loginHandler()}>Login</button>
       </section>
       <section className="my-12 text-lg text-gray-500 flex gap-4">
         <div 
           onClick={() => navi('/authenticator/registration')}
-          className="cursor-pointer select-none"
+          className="cursor-pointer select-none hover:text-saintradarkblue active:scale-95"
         >Registration</div>
         <div className="select-none">|</div>
         <div 
           onClick={() => navi('/authenticator/reissue-password')}
-          className="cursor-pointer select-none"
+          className="cursor-pointer select-none hover:text-saintradarkblue active:scale-95"
         >Reissue Password</div>
       </section>
     </>

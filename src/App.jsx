@@ -11,6 +11,7 @@ import Login from "./Components/auth/Login";
 import Registration from "./Components/auth/Registration";
 import ReissuePassword from "./Components/auth/ReissuePassword";
 import { ToastContainer } from "react-toastify";
+import PasswordReset from "./Components/auth/PasswordReset";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route index element={<Login />} />
           <Route path="registration" element={<Registration />} />
           <Route path="reissue-password" element={<ReissuePassword />} /> 
+          <Route path="password-reset" element={<PasswordReset />} />
         </Route>
         
 

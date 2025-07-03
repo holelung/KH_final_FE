@@ -56,7 +56,10 @@ axiosInstance.interceptors.response.use(
         console.error("아이디가 중복되었습니다.");
         break;
       case "E500":
-        console.log(message);
+        console.log(error);
+        toast.error(message);
+      case "E502":
+        toast.error(message);
     }
     return Promise.reject(error);
   }
