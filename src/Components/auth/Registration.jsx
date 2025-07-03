@@ -27,6 +27,7 @@ const Registration = () => {
   const [isMailSend, setIsMailSend] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFormFilled, setIsFormFilled] = useState(false);
   const [timer, setTimer] = useState(0);
   const timerRef = useRef(null);
 
@@ -40,6 +41,7 @@ const Registration = () => {
   // 주소 검색 클릭
   const handleAddressSearchClick = () => {
     open({ onComplete: handleAddressSearchComplete });
+    
   }
 
   // 주소 검색 완료 핸들러
@@ -60,6 +62,7 @@ const Registration = () => {
       ...prev,
       address1: fullAddress,
     }));
+    checkEmptyRegisterInfo();
     console.log(fullAddress); 
   }
 
@@ -109,13 +112,33 @@ const Registration = () => {
       });
   }
 
-  const handleRegister = () => {
-    // 회원가입 처리 로직
+  const handleInputChange = (value, type) => {
+    setRegisterInfo(prev => ({
+      ...prev,
+      [type]: value,
+    }));
+    checkEmptyRegisterInfo();
+  }
+
+  // 회원가입 정보가 비어있는지 확인하는 함수
+  const checkEmptyRegisterInfo = () => {
+    console.log("공백 체크");
+    console.log(registerInfo)
     for (const [key, value] of Object.entries(registerInfo)) {
+      if( key === "email" ) break;
       if (value === null || value.trim() === "" || value === undefined) {
-        toast.error(`빈칸 없이 입력해주세요.`);
+        setIsFormFilled(false);
         return;
       }
+    }
+    setIsFormFilled(true);
+  }
+
+  const handleRegister = () => {
+    // 회원가입 처리 로직
+    if(!isFormFilled) {
+      toast.error(`빈칸 없이 입력해주세요.`);
+      return;
     }
 
     if (!isEmailVerified) {
@@ -167,6 +190,7 @@ const Registration = () => {
       ...prev,
       ssn: raw,
     }));
+    checkEmptyRegisterInfo();
   }
 
   const handlePhoneChange = (e) => {
@@ -179,6 +203,7 @@ const Registration = () => {
       ...prev,
       phone: input,
     }));
+    checkEmptyRegisterInfo();
   }
 
   return (
@@ -201,10 +226,7 @@ const Registration = () => {
             type="text" 
             placeholder="사번" 
             className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg"
-            onChange={(e) => setRegisterInfo(prev => ({
-              ...prev,
-              username: e.target.value,
-            }))} 
+            onChange={(e) => handleInputChange(e.target.value, "username")} 
             value={registerInfo.username}
           />
         </div>
@@ -216,10 +238,7 @@ const Registration = () => {
             type="password" 
             placeholder="비밀번호" 
             className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg" 
-            onChange={(e) => setRegisterInfo(prev => ({
-              ...prev,
-              password: e.target.value,
-            }))}
+            onChange={(e) => handleInputChange(e.target.value, "password")}
             value={registerInfo.password}
           />
         </div>
@@ -231,10 +250,7 @@ const Registration = () => {
             type="text" 
             placeholder="이름" 
             className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg"
-            onChange={(e) => setRegisterInfo(prev => ({
-              ...prev,
-              realname: e.target.value,
-            }))}
+            onChange={(e) => handleInputChange(e.target.value, "realname")}
             value={registerInfo.realname}
           />
         </div>
@@ -275,7 +291,10 @@ const Registration = () => {
               className="w-4/5 h-full p-4 text-xl border-2 border-gray-400 rounded-lg" 
               value={registerInfo.address1}
             />
-            <button type="button" className="w-1/5 h-full text-xl text-white bg-saintragreen rounded-lg" onClick={() => handleAddressSearchClick()}>
+            <button 
+              type="button" 
+              className="w-1/5 h-full p-4 text-xl text-white bg-saintragreen rounded-lg" 
+              onClick={() => handleAddressSearchClick()}>
               Search
             </button>
           </div>
@@ -286,10 +305,7 @@ const Registration = () => {
               placeholder="상세 주소" 
               className="size-full px-4 py-2 text-xl border-2 border-gray-400 rounded-lg" 
               value={registerInfo.address2}
-              onChange={(e) => setRegisterInfo(prev => ({
-                ...prev,
-                address2: e.target.value,
-              }))}  
+              onChange={(e) => handleInputChange(e.target.value, "address2")}  
             />
           </div>
         </div>
@@ -312,7 +328,7 @@ const Registration = () => {
               />
               <button
                 type="button"
-                className="w-1/5 h-full text-xl text-white bg-saintragreen rounded-lg flex items-center justify-center active:scale-90 cursor-pointer disabled:bg-saintragreen/50"
+                className="w-1/5 h-full p-4 text-xl text-white bg-saintragreen rounded-lg flex items-center justify-center active:scale-90 cursor-pointer disabled:bg-saintragreen/50"
                 onClick={handleEmailVerification}
                 disabled={isLoading || isEmailVerified}
               >
@@ -345,7 +361,7 @@ const Registration = () => {
             />
             <button 
               type="button" 
-              className="w-1/5 h-full text-xl text-white bg-saintragreen rounded-lg disabled:bg-saintragreen/50 cursor-pointer active:scale-90" 
+              className="w-1/5 h-full p-2 text-xl text-white bg-saintragreen rounded-lg disabled:bg-saintragreen/50 cursor-pointer active:scale-90" 
               onClick={() => handleVerifyCode()} 
               disabled={isEmailVerified}>
               Verify
@@ -355,14 +371,21 @@ const Registration = () => {
 
       </section>
       <section className="mt-12">
-        <button 
-          type="submit" 
-          className="w-48 h-20 text-3xl text-white bg-saintragreen rounded-xl disabled:bg-saintragreen/50 cursor-pointer"
-          onClick={() => handleRegister()}
-          disabled={!isEmailVerified}
-        >
-          가입하기
-        </button>
+        <div className="flex flex-col justify-center">
+          <button 
+            type="submit" 
+            className="w-48 h-20 text-3xl text-white bg-saintragreen rounded-xl disabled:bg-saintragray cursor-pointer"
+            onClick={() => handleRegister()}
+            disabled={!isEmailVerified}
+          >
+            가입하기
+          </button>
+          { (!isEmailVerified || !isFormFilled) && (
+            <div className="text-sm text-red-500/50 m-auto mt-2">
+              {!isFormFilled ? "모든 정보를 입력해주세요" : "이메일 인증이 필요합니다."}
+            </div>
+          )}
+        </div>
       </section>
       <section className="my-12 text-lg text-gray-500 cursor-pointer hover:text-gray-600 active:scale-95 select-none">
         <div onClick={() => navi("/authenticator")}>Go Back to Authenticator</div>
