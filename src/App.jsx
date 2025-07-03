@@ -1,52 +1,43 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-
-import BoardList from "./pages/anonymous/BoardList";
-import BoardWrite from "./pages/anonymous/BoardWrite";
-import BoardDetail from "./pages/anonymous/BoardDetail";
+import "./App.css";
+import { AuthProvider } from "./Context/AuthContext";
+import { Routes, Route } from "react-router-dom";
+import Authenticator from "./pages/auth/authenticator/Authenticator";
+import DisplayArea from "./pages/include/displayarea/DisplayArea";
+import Test from "./pages/Home/Test";
+import BoardList from "./pages/board/BoardList";
+import Includes from "./pages/include/includes/Includes";
+import AuthRoute from "./pages/auth/authroute/AuthRoute";
+import Login from "./Components/auth/Login";
+import Registration from "./Components/auth/Registration";
+import ReissuePassword from "./Components/auth/ReissuePassword";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
-    <Router>
-      {/* 전체 레이아웃 */}
-      <div
-        style={{
-          padding: "20px",
-          fontFamily: "Arial, sans-serif",
-          minHeight: "100vh",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
-        {/* 상단 네비게이션 */}
-        <nav
-          style={{
-            marginBottom: "20px",
-            borderBottom: "1px solid #ccc",
-            paddingBottom: "10px",
-          }}
-        >
-          <Link
-            to="/"
-            style={{
-              marginRight: "20px",
-              textDecoration: "none",
-              color: "#333",
-            }}
-          >
-            📋 목록
-          </Link>
-          <Link to="/write" style={{ textDecoration: "none", color: "#333" }}>
-            ✏️ 글쓰기
-          </Link>
-        </nav>
+    <AuthProvider>
+      <ToastContainer 
+        position="bottom-right"/>
+      <Routes>
+        <Route path="/authenticator" element={<Authenticator />} >
+          <Route index element={<Login />} />
+          <Route path="registration" element={<Registration />} />
+          <Route path="reissue-password" element={<ReissuePassword />} /> 
+        </Route>
+        
 
-        {/* 라우터 영역 */}
-        <Routes>
-          <Route path="/" element={<BoardList />} />
-          <Route path="/write" element={<BoardWrite />} />
-          <Route path="/board/:id" element={<BoardDetail />} />
-        </Routes>
-      </div>
-    </Router>
+        <Route
+          element={
+            // <AuthRoute>
+            <Includes />
+            // </AuthRoute>
+          }
+        >
+          <Route path="/" element={<DisplayArea children={<></>} />} />
+          <Route path="/test" element={<DisplayArea children={<Test />} />} />
+          <Route path="/boards" element={<DisplayArea children={<BoardList />} />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
 

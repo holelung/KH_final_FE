@@ -6,5 +6,5 @@ export const apiService = {
   post: (url, data, config = {}) => axiosInstance.post(url, data, config),
   put: (url, data, config = {}) => axiosInstance.put(url, data, config),
   patch: (url, data, config = {}) => axiosInstance.patch(url, data, config),
-  delete: (url, config = {}) => axiosInstance.delete(url, config),
+  delete: (url, params = {}, config = {}) => axiosInstance.delete(url, params, config),
 };
