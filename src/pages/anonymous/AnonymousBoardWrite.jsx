@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { getUserId } from "../../utils/userUtils";
-import { uploadFiles } from "../../api/anonymousFileApi"; // 📁 파일 업로드 API
+import { uploadFiles } from "../../api/anonymousFileApi";
 
 function AnonymousBoardWrite() {
   const [title, setTitle] = useState("");
@@ -22,14 +22,12 @@ function AnonymousBoardWrite() {
       content,
     };
 
-    // 1️⃣ 게시글 먼저 등록
     axios
       .post("/api/board", newBoard)
       .then((res) => {
         const boardId = res.data.id;
         alert("익명 게시글이 등록되었습니다.");
 
-        // 2️⃣ 파일 업로드 (있다면)
         if (files.length > 0) {
           uploadFiles(files, boardId)
             .then(() => {

@@ -45,14 +45,14 @@ function AnonymousBoardList() {
     <div style={{ padding: 20 }}>
       <h2>익명 게시판 목록</h2>
 
-      {/* 🔍 검색창 */}
+      {/* 검색창 */}
       <div style={{ marginBottom: 20 }}>
         <input value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder="제목·내용 검색" style={{ padding: 6, width: 260 }} />
         <button onClick={handleSearch} style={{ marginLeft: 10 }}>
           검색
         </button>
 
-        {/* ✅ 내 글만 보기 토글 */}
+        {/* 내 글만 보기 토글 */}
         <label style={{ marginLeft: 30 }}>
           <input type="checkbox" checked={showMine} onChange={() => setShowMine((prev) => !prev)} /> 내가 쓴 글만 보기
         </label>
