@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Context/AuthContext";
 import { apiService } from "../../api/apiService";
+import { toast } from "react-toastify";
 
 
 
@@ -20,6 +21,10 @@ const Login = () => {
     ).then(response => {
       console.log(response);
       login(response.data.data.loginInfo, response.data.data.tokens);
+    }).catch(error => {
+      if(error.response.data.code === "E401"){
+        toast.error(error.response.data.message);
+      }
     });
   }
   

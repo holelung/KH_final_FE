@@ -12,6 +12,12 @@ import Registration from "./Components/auth/Registration";
 import ReissuePassword from "./Components/auth/ReissuePassword";
 import { ToastContainer } from "react-toastify";
 import PasswordReset from "./Components/auth/PasswordReset";
+import Mypage from "./pages/mypage/Mypage";
+import MypageDisplay from "./pages/mypage/MypageDisplay";
+import ModifyProfile from "./pages/mypage/ModifyProfile";
+import UpdatePassword from "./pages/mypage/UpdatePassword";
+import UpdateEmail from "./pages/mypage/UpdateEmail";
+import UserAttendance from "./pages/mypage/UserAttendance";
 
 function App() {
   return (
@@ -34,9 +40,16 @@ function App() {
             // </AuthRoute>
           }
         >
-          <Route path="/" element={<DisplayArea children={<></>} />} />
-          <Route path="/test" element={<DisplayArea children={<Test />} />} />
-          <Route path="/boards" element={<DisplayArea children={<BoardList />} />} />
+          <Route path="/" element={<></>} />
+          <Route path="/test" element={<Test />} />
+          <Route path="/boards" element={<BoardList />}  />
+          <Route path="/mypage" element={<MypageDisplay />} >
+            <Route index element={<Mypage/>} />
+            <Route path="modifyProfile" element={<ModifyProfile />} />
+            <Route path="updatePassword" element={<UpdatePassword />} />
+            <Route path="updateEmail" element={<UpdateEmail />} />
+            <Route path="attendance" element={<UserAttendance />} />
+          </Route>
         </Route>
       </Routes>
     </AuthProvider>
