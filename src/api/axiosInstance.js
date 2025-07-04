@@ -45,25 +45,21 @@ axiosInstance.interceptors.response.use(
     const res = error.response;
     const { success, code, message } = res?.data;
   
+    // 배포시 삭제할 코드
     if (success === false) {
       console.error(`안내 [${res.status}, ${code}]: ${message}`);
     }
   
 
     switch (code) {
-      case "E401":
-        toast.error("로그인이 만료되었습니다.");
-        sessionStorage.clear();
-        window.location.href = "/login";
-        break;
       case "E100":
-        toast.error("아이디가 중복되었습니다.");
-        break;
-      case "E101":
-        toast.error("이메일이 중복되었습니다.");
+        console.error("아이디가 중복되었습니다.");
         break;
       case "E500":
-        console.log(message);
+        console.log(error);
+        toast.error(message);
+      case "E502":
+        toast.error(message);
     }
     return Promise.reject(error);
   }
