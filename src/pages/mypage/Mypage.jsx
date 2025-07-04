@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { EnvelopeIcon, UserCircleIcon } from '@heroicons/react/24/solid'
@@ -9,11 +9,14 @@ import {
 } from '@heroicons/react/24/outline'
 import { apiService } from "../../api/apiService";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../Context/AuthContext";
 
 
 const Mypage = () => {
+  const { stompClient, connectedUsers } = useContext(AuthContext);
   const navi = useNavigate();
   const [userInfo, setUserInfo] = useState({})
+  const myStatus = connectedUsers.find(u => userInfo.username === u.username)?.status;
 
   useEffect(() => {
     apiService.get("/users/me")
@@ -22,8 +25,9 @@ const Mypage = () => {
           setUserInfo(response.data.data);
           console.log(response.data.data);
         }
-      })
+      });
   },[])
+
 
   const checkIn = () => {
 
@@ -61,7 +65,7 @@ const Mypage = () => {
               <div className="relative mb-6">
                 <UserCircleIcon className="h-24 w-24 text-gray-400" />
                 <span className="absolute bottom-0 right-0 bg-green-500 text-white text-xs rounded-full px-2 py-1">
-                  Online
+                  {myStatus}
                 </span>
               </div>
 

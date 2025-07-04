@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
 
   // STOMP client
   const clientRef = useRef(null);
+  const [connectedUsers, setConnectedUsers] = useState([]);
 
   // 세션에 이미 로그인 정보가 있으면 context 초기화
   useEffect(() => {
@@ -50,7 +51,10 @@ export const AuthProvider = ({ children }) => {
           console.log("WS connected");
           // 예: /topic/users 구독
           client.subscribe("/topic/users", frame => {
-            console.log("구독");
+            console.log("socket Subscribe success!");
+            const users = JSON.parse(frame.body);
+            setConnectedUsers(users);
+            sessionStorage.setItem("connectedUsers", JSON.stringify(users));
           }, stompHeaders);
         },
         onStompError: err => console.error(err),
@@ -103,7 +107,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout, stompClient: clientRef }}>
+    <AuthContext.Provider value={{ auth, login, logout, stompClient: clientRef, connectedUsers }}>
       {children}
     </AuthContext.Provider>);
 };
