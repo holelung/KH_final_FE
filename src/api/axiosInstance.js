@@ -1,6 +1,5 @@
 import axios from "axios";
 import { toast } from "react-toastify"
-import { TokenMissingError } from "./errors";
 
 
 const API_URL = window.ENV?.API_URL;

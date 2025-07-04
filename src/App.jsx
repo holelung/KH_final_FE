@@ -7,6 +7,8 @@ import Test from "./pages/Home/Test";
 import BoardList from "./pages/board/BoardList";
 import Includes from "./pages/include/includes/Includes";
 import AuthRoute from "./pages/auth/authroute/AuthRoute";
+import UnifiedCalendar from "./pages/calendar/UnifiedCalendar";
+import GroupChat from "./pages/chat/GroupChat";
 import Login from "./Components/auth/Login";
 import Registration from "./Components/auth/Registration";
 import ReissuePassword from "./Components/auth/ReissuePassword";
@@ -18,6 +20,7 @@ import ModifyProfile from "./pages/mypage/ModifyProfile";
 import UpdatePassword from "./pages/mypage/UpdatePassword";
 import UpdateEmail from "./pages/mypage/UpdateEmail";
 import UserAttendance from "./pages/mypage/UserAttendance";
+
 
 function App() {
   return (
@@ -43,6 +46,8 @@ function App() {
           <Route path="/" element={<></>} />
           <Route path="/test" element={<Test />} />
           <Route path="/boards" element={<BoardList />}  />
+          <Route path="/calendar" element={<DisplayArea children={<UnifiedCalendar />} />} />
+          <Route path="/chat" element={<DisplayArea children={<GroupChat />} />} />
           <Route path="/mypage" element={<MypageDisplay />} >
             <Route index element={<Mypage/>} />
             <Route path="modifyProfile" element={<ModifyProfile />} />
