@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import axiosInstance from '../../api/axiosinstance';
-import conf from '../../../conf';
+import { apiService } from '../../api/apiService';
 import './UnifiedCalendar.css';
 
 const userId = sessionStorage.getItem("userId");
@@ -19,11 +18,11 @@ const UnifiedCalendar = () => {
   const [showEvents, setShowEvents] = useState(true);
   const [showUserEvents, setShowUserEvents] = useState(true);
   const [showTeamEvents, setShowTeamEvents] = useState(true);
-  const requestUrl = `${conf.API_URL}/schedules`;
+  
 
   const fetchEvents = async (startDate, endDate) => {
     try {
-      const res = await axiosInstance.get(requestUrl, {
+      const res = await apiService.get("/schedules", {
         params: { startDate, endDate },
       });
 

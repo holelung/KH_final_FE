@@ -4,7 +4,7 @@ const GroupChat = () => {
   const socketRef = useRef(null);
 
   useEffect(() => {
-    const token = JSON.parse(sessionStorage.getItem("user"))?.accessToken;
+    const token = JSON.parse(sessionStorage.getItem("tokens"))?.accessToken;
     if (!token) {
       console.error("❌ 토큰 없음");
       return;
