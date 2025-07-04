@@ -46,8 +46,8 @@ function App() {
           <Route path="/" element={<></>} />
           <Route path="/test" element={<Test />} />
           <Route path="/boards" element={<BoardList />}  />
-          <Route path="/calendar" element={<DisplayArea children={<UnifiedCalendar />} />} />
-          <Route path="/chat" element={<DisplayArea children={<GroupChat />} />} />
+          <Route path="/calendar" element={<UnifiedCalendar />} />
+          <Route path="/chat" element={<GroupChat />} />
           <Route path="/mypage" element={<MypageDisplay />} >
             <Route index element={<Mypage/>} />
             <Route path="modifyProfile" element={<ModifyProfile />} />
