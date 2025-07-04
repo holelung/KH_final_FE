@@ -21,20 +21,17 @@ import UpdatePassword from "./pages/mypage/UpdatePassword";
 import UpdateEmail from "./pages/mypage/UpdateEmail";
 import UserAttendance from "./pages/mypage/UserAttendance";
 
-
 function App() {
   return (
     <AuthProvider>
-      <ToastContainer 
-        position="bottom-right"/>
+      <ToastContainer position="bottom-right" />
       <Routes>
-        <Route path="/authenticator" element={<Authenticator />} >
+        <Route path="/authenticator" element={<Authenticator />}>
           <Route index element={<Login />} />
           <Route path="registration" element={<Registration />} />
-          <Route path="reissue-password" element={<ReissuePassword />} /> 
+          <Route path="reissue-password" element={<ReissuePassword />} />
           <Route path="password-reset" element={<PasswordReset />} />
         </Route>
-        
 
         <Route
           element={
@@ -45,11 +42,11 @@ function App() {
         >
           <Route path="/" element={<></>} />
           <Route path="/test" element={<Test />} />
-          <Route path="/boards" element={<BoardList />}  />
+          <Route path="/boards" element={<BoardList />} />
           <Route path="/calendar" element={<DisplayArea children={<UnifiedCalendar />} />} />
           <Route path="/chat" element={<DisplayArea children={<GroupChat />} />} />
-          <Route path="/mypage" element={<MypageDisplay />} >
-            <Route index element={<Mypage/>} />
+          <Route path="/mypage" element={<MypageDisplay />}>
+            <Route index element={<Mypage />} />
             <Route path="modifyProfile" element={<ModifyProfile />} />
             <Route path="updatePassword" element={<UpdatePassword />} />
             <Route path="updateEmail" element={<UpdateEmail />} />
