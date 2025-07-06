@@ -61,8 +61,8 @@ function App() {
           <Route path="/boards" element={<DisplayArea children={<BoardList />} />} />
           <Route path="/boards/edit" element={<DisplayArea children={<BoardEditer />} />} />
           <Route path="/boards/detail" element={<DisplayArea children={<BoardDetail />} />} />
-          <Route path="/department" element={<DisplayArea children={<DepartmentList />} />} />
-          <Route path="/department/:id" element={<DisplayArea children={<DepartmentDetail />} />} />
+          <Route path="/department" element={<DepartmentList />} />
+          <Route path="/department/:id" element={<DepartmentDetail />} />
         </Route>
       </Routes>
     </AuthProvider>
