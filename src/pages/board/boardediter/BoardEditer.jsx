@@ -1,17 +1,62 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill-new";
-import { useDropzone } from "react-dropzone";
 import "react-quill-new/dist/quill.snow.css";
 import { apiService } from "../../../api/apiService";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const BoardEditer = () => {
+  const [type, setType] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imageFiles, setImageFiles] = useState([]);
   const [attachedFiles, setAttachedFiles] = useState([]);
 
+  const quillRef = useRef(null);
+
   const navi = useNavigate();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log(content);
+    console.log(imageFiles);
+    console.log(attachedFiles);
+  }, [content, imageFiles, attachedFiles]);
+
+  useEffect(() => {
+    if (!location.state) {
+      alert("잘못된 접근 입니다.");
+      navi("/");
+      return;
+    }
+    setType(location.state.type);
+  }, []);
+
+  useEffect(() => {
+    const editor = quillRef.current.getEditor();
+    // 1) 마운트 시점에 에디터 안에 있는 파일 ID들 초기화
+    let prevFileIds = new Set(Array.from(editor.root.querySelectorAll("img[data-file-id]")).map((img) => img.getAttribute("data-file-id")));
+
+    const onTextChange = (_, __, source) => {
+      if (source !== "user") return;
+      const currFileIds = new Set(Array.from(editor.root.querySelectorAll("img[data-file-id]")).map((img) => img.getAttribute("data-file-id")));
+      // 삭제된 파일 ID 찾기
+      for (let fileId of prevFileIds) {
+        if (!currFileIds.has(fileId)) {
+          apiService
+            .delete(`http://localhost:8080/api/files/boards/${fileId}`)
+            .then(() => {
+              setImageFiles((ids) => ids.filter((id) => id !== fileId));
+            })
+            .catch(console.error);
+        }
+      }
+      prevFileIds = currFileIds;
+    };
+
+    editor.on("text-change", onTextChange);
+    return () => editor.off("text-change", onTextChange);
+  }, []);
 
   const customModules = {
     toolbar: {
@@ -21,30 +66,27 @@ const BoardEditer = () => {
         [{ header: 1 }, { header: 2 }],
         [{ list: "ordered" }, { list: "bullet" }],
         [{ script: "sub" }, { script: "super" }],
-        [{ indent: "-1" }, { indent: "+1" }],
         [{ direction: "rtl" }],
         [{ size: ["small", false, "large", "huge"] }],
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [{ color: [] }, { background: [] }],
-        [{ font: [] }],
         [{ align: [] }],
-        ["link", "image", "video"],
-        ["clean"],
+        ["image"],
       ],
       handlers: {
         image: () => {
           const input = document.createElement("input");
           input.setAttribute("type", "file");
           input.setAttribute("accept", "image/*");
-          input.click();
 
+          const editor = quillRef.current.getEditor();
+          const range = editor.getSelection(true);
+
+          input.click();
           input.onchange = () => {
             if (input.files && input.files[0]) {
-              const url = handleFileUpload(input.files[0]);
-              if (url) {
-                const range = window.getSelection().getRangeAt(0);
-                window.quill.insertEmbed(range.index, "image", url);
-              }
+              // 업로드 + 삽입을 모두 uploadImageFile 에서 처리
+              uploadImageFile(input.files[0], range.index);
             }
           };
         },
@@ -56,13 +98,11 @@ const BoardEditer = () => {
     return file.type.startsWith("image/");
   };
 
-  const handleFileUpload = (files) => {
-    for (const file of files) {
-      if (isImageFile(file)) {
-        uploadImageFile(file);
-      } else {
-        uploadAttachedFile(file);
-      }
+  const handleFileUpload = (file) => {
+    if (isImageFile(file)) {
+      uploadImageFile(file);
+    } else {
+      uploadAttachedFile(file);
     }
   };
 
@@ -71,13 +111,22 @@ const BoardEditer = () => {
     formData.append("file", file);
 
     apiService
-      .post(``, formData, {
+      .post(`http://localhost:8080/api/files/boards`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
         console.log(res);
-        const imgTag = `<img src="${res.data.data.url}" data-file-id="${res.data.data.id}" alt="${file.name}" />`;
-        setContent((prev) => prev + imgTag);
+        const imgTag = `<img src="${res.data.data.url}" data-file-id="${res.data.data.fileId}" alt="${res.data.data.origin}" />`;
+        const quill = quillRef.current.getEditor();
+        const range = quill.getSelection(); // 현재 커서 위치
+        if (range) {
+          quill.insertEmbed(range.index, "image", res.data.data.url);
+        }
+        setImageFiles((prev) => [...prev, res.data.data.fileId]);
+        setTimeout(() => {
+          const imgs = quill.root.querySelectorAll(`img[src="${res.data.data.url}"]`);
+          imgs.forEach((img) => img.setAttribute("data-file-id", res.data.data.fileId));
+        }, 0);
       })
       .catch((err) => {
         console.log(err);
@@ -89,12 +138,12 @@ const BoardEditer = () => {
     formData.append("file", file);
 
     apiService
-      .post(``, formData, {
+      .post(`http://localhost:8080/api/files/boards`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
         console.log(res);
-        setAttachedFiles((prev) => [...prev, response.data.data]);
+        setAttachedFiles((prev) => [...prev, res.data.data]);
       })
       .catch((err) => {
         console.log(err);
@@ -111,10 +160,13 @@ const BoardEditer = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(type);
     apiService
-      .post(``, { type: type, itle: title, content: content, imageFiles: imageFiles, attachedFiles: attachedFiles })
+      .post(`http://localhost:8080/api/boards`, { type: type, title: title, content: content, imageFiles: imageFiles })
       .then((res) => {
         console.log(res);
+        console.log(type);
+        navi(`/boards/detail?type=${type}&boardId=${res.data.data}`);
       })
       .catch((err) => {
         console.log(err);
@@ -127,7 +179,13 @@ const BoardEditer = () => {
         <section className="h-max flex flex-col gap-2">
           <div className="ml-1 font-PyeojinGothicB text-3xl text-saintrablack">게시물 작성</div>
           <div>
-            <input value={title} onChange={handleTitle} type="text" placeholder="제목" className="w-full p-2 border-1 font-PyeojinGothicM border-gray-300" />
+            <input
+              value={title}
+              onChange={handleTitle}
+              type="text"
+              placeholder="제목"
+              className="w-full px-4 py-2 border-1 font-PyeojinGothicM border-gray-300"
+            />
           </div>
           {attachedFiles.length > 0 && (
             <div>
@@ -142,7 +200,7 @@ const BoardEditer = () => {
               </ul>
             </div>
           )}
-          <ReactQuill value={content} onChange={handleContent} modules={customModules} theme="snow" />
+          <ReactQuill ref={quillRef} value={content} onChange={handleContent} modules={customModules} theme="snow" />
         </section>
         <section>
           <div className="flex justify-end gap-2">

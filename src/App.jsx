@@ -9,6 +9,9 @@ import BoardList from "./pages/board/boardlist/BoardList";
 import Includes from "./pages/include/includes/Includes";
 import AuthRoute from "./pages/auth/authroute/AuthRoute";
 import BoardEditer from "./pages/board/boardediter/BoardEditer";
+import DepartmentList from "./pages/department/DepartmentList";
+import BoardDetail from "./pages/board/boarddetail/BoardDetail";
+import DepartmentDetail from "./pages/department/departmentdetail/DepartmentDetail";
 
 function App() {
   return (
@@ -27,6 +30,9 @@ function App() {
           <Route path="/test" element={<DisplayArea children={<Test />} />} />
           <Route path="/boards" element={<DisplayArea children={<BoardList />} />} />
           <Route path="/boards/edit" element={<DisplayArea children={<BoardEditer />} />} />
+          <Route path="/boards/detail" element={<DisplayArea children={<BoardDetail />} />} />
+          <Route path="/department" element={<DisplayArea children={<DepartmentList />} />} />
+          <Route path="/department/:id" element={<DisplayArea children={<DepartmentDetail />} />} />
         </Route>
       </Routes>
     </AuthProvider>

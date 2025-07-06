@@ -25,6 +25,14 @@ const Navbar = () => {
             <div className="size-8 flex justify-center items-center">3</div>
             <div className="flex justify-center items-center">자유게시판</div>
           </div>
+          <div onClick={() => navi("/boards?type=anonymous&page=1")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <div className="size-8 flex justify-center items-center">3</div>
+            <div className="flex justify-center items-center">익명게시판</div>
+          </div>
+          <div onClick={() => navi("/department")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <div className="size-8 flex justify-center items-center">4</div>
+            <div className="flex justify-center items-center">부서</div>
+          </div>
         </section>
         <section className="w-full h-32 p-4 font-PyeojinGothicB text-lg flex flex-col justify-center">
           <div className="w-full h-8 flex justify-start items-center gap-2">

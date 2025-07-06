@@ -48,7 +48,7 @@ const BoardList = () => {
       apiService
         .get(`http://localhost:8080/api/boards?${searchParams.toString()}`)
         .then((res) => {
-          console.log(res.data);
+          console.log(res);
           setBoardList(res.data.data.boardList);
           setStartButton(res.data.data.startButton);
           setEndButton(res.data.data.endButton);
@@ -118,7 +118,7 @@ const BoardList = () => {
           <div>
             <button
               onClick={() => {
-                navi("/");
+                navi("/boards/edit", { state: { type: type } });
               }}
               className="px-2 py-1 mr-1 border-2 rounded-sm text-lg cursor-pointer"
             >
@@ -130,25 +130,53 @@ const BoardList = () => {
           <section className="bg-saintralightblue rounded-md">
             <table className="table-fixed w-full border-separate border-spacing-4">
               <thead className="font-PyeojinGothicB text-lg">
-                <tr>
-                  <th className="w-1/8">번호</th>
-                  <th className="w-4/8">제목</th>
-                  <th className="w-2/8">작성자</th>
-                  <th className="w-1/8">작성일</th>
-                </tr>
+                {type === "anonymous" ? (
+                  <tr>
+                    <th className="w-1/8">번호</th>
+                    <th className="w-6/8">제목</th>
+                    <th className="w-1/8">작성일</th>
+                  </tr>
+                ) : (
+                  <tr>
+                    <th className="w-1/8">번호</th>
+                    <th className="w-4/8">제목</th>
+                    <th className="w-2/8">작성자</th>
+                    <th className="w-1/8">작성일</th>
+                  </tr>
+                )}
               </thead>
               <tbody className="font-PretendardM text-center">
                 {boardList.length > 0 ? (
-                  boardList.map((board) => (
-                    <tr key={board.id}>
-                      <td>{board.id}</td>
-                      <td>{board.title}</td>
-                      <td>
-                        {board.realname}({board.username})
-                      </td>
-                      <td>{board.createDate}</td>
-                    </tr>
-                  ))
+                  type === "anonymous" ? (
+                    boardList.map((board) => (
+                      <tr
+                        key={board.id}
+                        onClick={() => {
+                          navi(`/boards/detail?type=${type}&boardId=${board.id}`);
+                        }}
+                      >
+                        <td>{board.id}</td>
+                        <td>{board.title}</td>
+                        <td>{board.createDate}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    boardList.map((board) => (
+                      <tr
+                        key={board.id}
+                        onClick={() => {
+                          navi(`/boards/detail?type=${type}&boardId=${board.id}`);
+                        }}
+                      >
+                        <td>{board.id}</td>
+                        <td>{board.title}</td>
+                        <td>
+                          {board.realname}({board.username})
+                        </td>
+                        <td>{board.createDate}</td>
+                      </tr>
+                    ))
+                  )
                 ) : (
                   <tr>
                     <td colSpan={4}>게시물이 없습니다</td>
@@ -162,7 +190,7 @@ const BoardList = () => {
               <select value={condition} onChange={handleCondition} className="border-2 border-gray-500 rounded-sm text-lg font-PyeojinGothicM text-center">
                 <option value="title">제목</option>
                 <option value="content">내용</option>
-                <option value="writer">작성자</option>
+                {type === "anonymous" ? "" : <option value="writer">작성자</option>}
               </select>
               <input
                 type="text"
