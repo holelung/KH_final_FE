@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.18",
     "@fullcalendar/daygrid": "^6.1.18",
+    "@fullcalendar/interaction": "^6.1.18",
     "@fullcalendar/react": "^6.1.18",
+    "@fullcalendar/resource-timeline": "^6.1.18",
     "@heroicons/react": "^2.2.0",
     "@rollup/rollup-win32-x64-msvc": "^4.44.2",
     "@stomp/stompjs": "^7.1.1",

@@ -30,11 +30,22 @@ const Navbar = () => {
             <div className="flex justify-center items-center">자유게시판</div>
           </div>
           <div onClick={() => navi("/boards?type=anonymous&page=1")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">3</div>
+            <div className="size-8 flex justify-center items-center">4</div>
             <div className="flex justify-center items-center">익명게시판</div>
           </div>
+          <div onClick={() => navi("/calendar")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <div className="size-8 flex justify-center items-center">5</div>
+            <div className="flex justify-center items-center">캘린더</div>
+          </div>
+          <div onClick={() => navi("/meetingroom")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <div className="size-8 flex justify-center items-center">6</div>
+            <div className="flex justify-center items-center">회의실</div>
+          </div>
+          <div onClick={() => navi("/chat")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <div className="size-8 flex justify-center items-center">7</div>
+            <div className="flex justify-center items-center">채팅</div>
           <div onClick={() => navi("/department")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">4</div>
+            <div className="size-8 flex justify-center items-center">8</div>
             <div className="flex justify-center items-center">부서</div>
           </div>
         </section>
@@ -44,6 +55,7 @@ const Navbar = () => {
             <div className="flex justify-center items-center cursor-pointer select-none" onClick={() => logout()}>로그아웃</div>
           </div>
         </section>
+        
       </div>
     </>
   );

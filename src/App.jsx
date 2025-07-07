@@ -20,6 +20,10 @@ import ModifyProfile from "./pages/mypage/ModifyProfile";
 import UpdatePassword from "./pages/mypage/UpdatePassword";
 import UpdateEmail from "./pages/mypage/UpdateEmail";
 import UserAttendance from "./pages/mypage/UserAttendance";
+import ChatRoomList from "./pages/chat/ChatRoomList";
+import CalendarForm from "./pages/calendar/CalendarForm";
+import MeetingRoomCalendar from "./pages/meetingRoom/MeetingRoomCalendar";
+import MeetingRoomForm from "./pages/meetingRoom/MeetingRoomForm";
 import BoardEditer from "./pages/board/boardediter/BoardEditer";
 import DepartmentList from "./pages/department/DepartmentList";
 import BoardDetail from "./pages/board/boarddetail/BoardDetail";
@@ -50,11 +54,15 @@ function App() {
         >
           <Route path="/" element={<></>} />
           <Route path="/test" element={<Test />} />
-          <Route path="/boards" element={<BoardList />} />
-          <Route path="/calendar" element={<DisplayArea children={<UnifiedCalendar />} />} />
-          <Route path="/chat" element={<DisplayArea children={<GroupChat />} />} />
-          <Route path="/mypage" element={<MypageDisplay />}>
-            <Route index element={<Mypage />} />
+          <Route path="/boards" element={<BoardList />}  />
+          <Route path="/calendar" element={<UnifiedCalendar />} />
+          <Route path="/calendar/write" element={<CalendarForm />} />
+          <Route path="/meetingroom" element={<MeetingRoomCalendar />} />
+          <Route path="/meetingroom/write" element={<MeetingRoomForm/>} />
+          <Route path="/chat" element={<ChatRoomList />} />
+          <Route path="/chat/:teamId" element={<GroupChat />} />
+          <Route path="/mypage" element={<MypageDisplay />} >
+            <Route index element={<Mypage/>} />
             <Route path="modifyProfile" element={<ModifyProfile />} />
             <Route path="updatePassword" element={<UpdatePassword />} />
             <Route path="updateEmail" element={<UpdateEmail />} />
