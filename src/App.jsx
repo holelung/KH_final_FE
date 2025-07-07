@@ -24,6 +24,10 @@ import BoardEditer from "./pages/board/boardediter/BoardEditer";
 import DepartmentList from "./pages/department/DepartmentList";
 import BoardDetail from "./pages/board/boarddetail/BoardDetail";
 import DepartmentDetail from "./pages/department/departmentdetail/DepartmentDetail";
+import ApproveJoin from "./pages/admin/ApproveJoin";
+import Log from "./pages/admin/Log";
+import UserManage from "./pages/admin/UserManage";
+
 
 function App() {
   return (
@@ -63,6 +67,9 @@ function App() {
           <Route path="/boards/detail" element={<BoardDetail />} />
           <Route path="/department" element={<DepartmentList />} />
           <Route path="/department/:id" element={<DepartmentDetail />} />
+          <Route path="approve-join" element={<ApproveJoin />} />
+          <Route path="user-manage" element={<UserManage />}/>
+          <Route path="log" element={<Log />}/>
         </Route>
       </Routes>
     </AuthProvider>
