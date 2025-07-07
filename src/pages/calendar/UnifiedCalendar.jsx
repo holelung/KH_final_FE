@@ -19,7 +19,6 @@ const UnifiedCalendar = () => {
   const [editMode, setEditMode] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
 
-
   const [showSchedule, setShowSchedule] = useState(true);
   const [showScheduleUser, setShowScheduleUser] = useState(true);
   const [showScheduleTeam, setShowScheduleTeam] = useState(true);
@@ -95,8 +94,6 @@ const UnifiedCalendar = () => {
   });
 
   const handleModify = () => {
-    console.log('수정 버튼 클릭됨:', selectedEvent);
-    console.log('🛠️ 수정 버튼 클릭됨, selectedEvent:', selectedEvent);
     setEditTarget(selectedEvent);
     setEditMode(true);
     setCreateDate(null);
@@ -116,72 +113,72 @@ const UnifiedCalendar = () => {
       .catch(() => toast.error('일정 삭제에 실패했습니다.'));
   };
 
-  
-return (
-  <div className="p-4">
-    {/* 필터 영역 */}
-    <div className="mb-4">
-      <div className="flex items-center gap-6 mb-2">
-        <label className="flex items-center gap-2 font-semibold">
-          <input
-            type="checkbox"
-            checked={showSchedule}
-            onChange={() => setShowSchedule(!showSchedule)}
-          />
-          <span>일정 보기</span>
-        </label>
-        <label className="flex items-center gap-2 font-semibold">
-          <input
-            type="checkbox"
-            checked={showReserve}
-            onChange={() => setShowReserve(!showReserve)}
-          />
-          <span>회의실 예약 보기</span>
-        </label>
-      </div>
+  return (
+    <div className="p-4">
+      {/* ----------- 필터 영역(한줄/검정) ----------- */}
+<div className="mb-8 flex flex-wrap items-center gap-4 justify-end py-2 px-0">
+  <label className="flex items-center gap-2 font-bold text-black text-base">
+    <input
+      type="checkbox"
+      checked={showSchedule}
+      onChange={() => setShowSchedule(!showSchedule)}
+      className="w-5 h-5 accent-white"
+    />
+    일정 보기
+  </label>
+  <label className="flex items-center gap-1 font-normal text-black text-base">
+    <input
+      type="checkbox"
+      checked={showScheduleUser}
+      onChange={() => setShowScheduleUser(!showScheduleUser)}
+      className="accent-white"
+      disabled={!showSchedule}
+    />
+    개인 일정
+  </label>
+  <label className="flex items-center gap-1 font-normal text-black text-base">
+    <input
+      type="checkbox"
+      checked={showScheduleTeam}
+      onChange={() => setShowScheduleTeam(!showScheduleTeam)}
+      className="accent-white"
+      disabled={!showSchedule}
+    />
+    팀 일정
+  </label>
+  <span className="mx-2 text-gray-300 select-none">|</span>
+  <label className="flex items-center gap-2 font-bold text-black text-base">
+    <input
+      type="checkbox"
+      checked={showReserve}
+      onChange={() => setShowReserve(!showReserve)}
+      className="w-5 h-5 accent-white"
+    />
+    회의실 예약 보기
+  </label>
+  <label className="flex items-center gap-1 font-normal text-black text-base">
+    <input
+      type="checkbox"
+      checked={showReserveUser}
+      onChange={() => setShowReserveUser(!showReserveUser)}
+      className="accent-white"
+      disabled={!showReserve}
+    />
+    개인 예약
+  </label>
+  <label className="flex items-center gap-1 font-normal text-black text-base">
+    <input
+      type="checkbox"
+      checked={showReserveTeam}
+      onChange={() => setShowReserveTeam(!showReserveTeam)}
+      className="accent-white"
+      disabled={!showReserve}
+    />
+    팀 예약
+  </label>
+</div>
 
-      {showSchedule && (
-        <div className="flex gap-4 pl-2 mb-2">
-          <label className="flex items-center gap-1">
-            <input
-              type="checkbox"
-              checked={showScheduleUser}
-              onChange={() => setShowScheduleUser(!showScheduleUser)}
-            />
-            <span>개인 일정</span>
-          </label>
-          <label className="flex items-center gap-1">
-            <input
-              type="checkbox"
-              checked={showScheduleTeam}
-              onChange={() => setShowScheduleTeam(!showScheduleTeam)}
-            />
-            <span>팀 일정</span>
-          </label>
-        </div>
-      )}
-
-      {showReserve && (
-        <div className="flex gap-4 pl-2">
-          <label className="flex items-center gap-1">
-            <input
-              type="checkbox"
-              checked={showReserveUser}
-              onChange={() => setShowReserveUser(!showReserveUser)}
-            />
-            <span>개인 예약</span>
-          </label>
-          <label className="flex items-center gap-1">
-            <input
-              type="checkbox"
-              checked={showReserveTeam}
-              onChange={() => setShowReserveTeam(!showReserveTeam)}
-            />
-            <span>팀 예약</span>
-          </label>
-        </div>
-      )}
-    </div>
+      {/* ----------- 필터 영역 끝 ----------- */}
 
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -211,115 +208,113 @@ return (
           fetchEvents(startDate, endDate);
         }}
       />
-    {selectedEvent && (
-      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50"
-           onClick={() => setSelectedEvent(null)}>
-        <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md"
-             onClick={(e) => e.stopPropagation()}>
-          <div
-            className="flex justify-between items-center border-b-8 pb-2 mb-4"
-            style={{ borderColor: selectedEvent.colorCode }}
-          >
-            <h3 className="text-xl font-semibold">{selectedEvent.title}</h3>
-            <button
-              className="text-gray-500 hover:text-red-500 text-xl"
-              onClick={() => setSelectedEvent(null)}
+      {selectedEvent && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50"
+          onClick={() => setSelectedEvent(null)}>
+          <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}>
+            <div
+              className="flex justify-between items-center border-b-8 pb-2 mb-4"
+              style={{ borderColor: selectedEvent.colorCode }}
             >
-              ×
-            </button>
-          </div>
+              <h3 className="text-xl font-semibold">{selectedEvent.title}</h3>
+              <button
+                className="text-gray-500 hover:text-red-500 text-xl"
+                onClick={() => setSelectedEvent(null)}
+              >
+                ×
+              </button>
+            </div>
 
-          <div className="space-y-2">
-            {selectedEvent.type === 'schedule' ? (
-              <>
-                <p>{selectedEvent.content}</p>
-                <div className="text-sm text-gray-500">
-                  {formatKoreanDate(selectedEvent.startDate)} ~ {formatKoreanDate(selectedEvent.endDate)}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold">
-                    {selectedEvent.reserverType === 'TEAM' ? '👥 팀' : '👤 개인'}
-                  </span>
-                  <span>{selectedEvent.reserverName}</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <h3>{selectedEvent.roomName}</h3>
-                <p>위치: {selectedEvent.roomLocation}</p>
-                <p>목적: {selectedEvent.purpose}</p>
-                <div className="text-sm text-gray-500">
-                  {new Date(selectedEvent.startTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })} ~
-                  {new Date(selectedEvent.endTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold">회의실 예약</span>
-                  <span>{selectedEvent.reserverName}</span>
-                </div>
-              </>
-            )}
-            {selectedEvent.type === 'schedule' &&
-              String(userId) === String(selectedEvent.createdBy) && (
-                <div className="flex gap-2 justify-end pt-4">
-                  <button
-                    onClick={handleModify}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">수정</button>
-                  <button
-                    onClick={handleDelete}
-                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">삭제</button>
-                </div>
+            <div className="space-y-2">
+              {selectedEvent.type === 'schedule' ? (
+                <>
+                  <p>{selectedEvent.content}</p>
+                  <div className="text-sm text-gray-500">
+                    {formatKoreanDate(selectedEvent.startDate)} ~ {formatKoreanDate(selectedEvent.endDate)}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold">
+                      {selectedEvent.reserverType === 'TEAM' ? '👥 팀' : '👤 개인'}
+                    </span>
+                    <span>{selectedEvent.reserverName}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h3>{selectedEvent.roomName}</h3>
+                  <p>위치: {selectedEvent.roomLocation}</p>
+                  <p>목적: {selectedEvent.purpose}</p>
+                  <div className="text-sm text-gray-500">
+                    {new Date(selectedEvent.startTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })} ~
+                    {new Date(selectedEvent.endTime).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold">회의실 예약</span>
+                    <span>{selectedEvent.reserverName}</span>
+                  </div>
+                </>
               )}
+              {selectedEvent.type === 'schedule' &&
+                String(userId) === String(selectedEvent.createdBy) && (
+                  <div className="flex gap-2 justify-end pt-4">
+                    <button
+                      onClick={handleModify}
+                      className="px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-500">수정</button>
+                    <button
+                      onClick={handleDelete}
+                      className="px-4 py-2 bg-red-400 text-white rounded hover:bg-red-500">삭제</button>
+                  </div>
+                )}
+            </div>
           </div>
         </div>
-      </div>
-    )}
-{createDate && (
-  <CalendarForm
-    defaultDate={createDate}
-    selectedEvent={null}
-    onClose={() => {
-      setCreateDate(null);
-      setEditMode(false);
-      setEditTarget(null);
-      setSelectedEvent(null);
-    }}
-    onSuccess={() => {
-      fetchEvents(
-        new Date().toISOString().slice(0, 10),
-        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10)
-      );
-      setCreateDate(null);
-      setEditMode(false);
-      setEditTarget(null);
-      setSelectedEvent(null);
-    }}
-  />
-)}
+      )}
+      {createDate && (
+        <CalendarForm
+          defaultDate={createDate}
+          selectedEvent={null}
+          onClose={() => {
+            setCreateDate(null);
+            setEditMode(false);
+            setEditTarget(null);
+            setSelectedEvent(null);
+          }}
+          onSuccess={() => {
+            fetchEvents(
+              new Date().toISOString().slice(0, 10),
+              new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10)
+            );
+            setCreateDate(null);
+            setEditMode(false);
+            setEditTarget(null);
+            setSelectedEvent(null);
+          }}
+        />
+      )}
 
-{editTarget && (
-  <CalendarForm
-    defaultDate={editTarget.startDate}
-    selectedEvent={editTarget}
-    onClose={() => {
-      setEditTarget(null);
-      setEditMode(false);
-      setSelectedEvent(null);
-    }}
-    onSuccess={() => {
-      fetchEvents(
-        new Date().toISOString().slice(0, 10),
-        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10)
-      );
-      setEditTarget(null);
-      setEditMode(false);
-      setSelectedEvent(null);
-    }}
-  />
-)}
-
-  </div>
-);
-
+      {editTarget && (
+        <CalendarForm
+          defaultDate={editTarget.startDate}
+          selectedEvent={editTarget}
+          onClose={() => {
+            setEditTarget(null);
+            setEditMode(false);
+            setSelectedEvent(null);
+          }}
+          onSuccess={() => {
+            fetchEvents(
+              new Date().toISOString().slice(0, 10),
+              new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10)
+            );
+            setEditTarget(null);
+            setEditMode(false);
+            setSelectedEvent(null);
+          }}
+        />
+      )}
+    </div>
+  );
 };
 
 export default UnifiedCalendar;
