@@ -3,6 +3,7 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { apiService } from "../../../api/apiService";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const BoardEditer = () => {
   const [type, setType] = useState("");
@@ -25,9 +26,8 @@ const BoardEditer = () => {
 
   useEffect(() => {
     if (!location.state) {
-      alert("잘못된 접근 입니다.");
-      navi("/");
-      return;
+      toast.error("잘못된 접근 입니다.");
+      navi(-1);
     }
     setType(location.state.type);
   }, []);
@@ -44,7 +44,7 @@ const BoardEditer = () => {
       for (let fileId of prevFileIds) {
         if (!currFileIds.has(fileId)) {
           apiService
-            .delete(`http://localhost:8080/api/files/boards/${fileId}`)
+            .delete(`/files/boards/${fileId}`)
             .then(() => {
               setImageFiles((ids) => ids.filter((id) => id !== fileId));
             })
@@ -111,7 +111,7 @@ const BoardEditer = () => {
     formData.append("file", file);
 
     apiService
-      .post(`http://localhost:8080/api/files/boards`, formData, {
+      .post(`/files/boards`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
@@ -138,7 +138,7 @@ const BoardEditer = () => {
     formData.append("file", file);
 
     apiService
-      .post(`http://localhost:8080/api/files/boards`, formData, {
+      .post(`/files/boards`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
@@ -162,7 +162,7 @@ const BoardEditer = () => {
     e.preventDefault();
     console.log(type);
     apiService
-      .post(`http://localhost:8080/api/boards`, { type: type, title: title, content: content, imageFiles: imageFiles })
+      .post(`/boards`, { type: type, title: title, content: content, imageFiles: imageFiles })
       .then((res) => {
         console.log(res);
         console.log(type);
@@ -200,7 +200,7 @@ const BoardEditer = () => {
               </ul>
             </div>
           )}
-          <ReactQuill ref={quillRef} value={content} onChange={handleContent} modules={customModules} theme="snow" />
+          <ReactQuill ref={quillRef} value={content} onChange={handleContent} modules={customModules} theme="snow" className="quill-editor" />
         </section>
         <section>
           <div className="flex justify-end gap-2">

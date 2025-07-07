@@ -20,8 +20,8 @@ const Header = () => {
 
   return (
     <>
-      <div className="absolute top-0 w-full h-12 z-5 bg-saintralightblue shadow-md font-PretendardM flex justify-center items-center box-border">
-        <div className="w-5xl h-full flex justify-end items-center gap-4">
+      <div className="absolute top-0 left-48 w-[calc(100%-192px)] h-12 z-5 bg-saintralightblue shadow-md font-PretendardM flex justify-center items-center box-border">
+        <div className="w-7xl h-full flex justify-end items-center gap-4">
           <div className="size-full flex justify-end">
             <div
               onClick={() => {

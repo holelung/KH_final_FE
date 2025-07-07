@@ -1,8 +1,8 @@
 import { useState, useEffect, createContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import SockJS from 'sockjs-client';
-import { Client } from '@stomp/stompjs';
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
 export const AuthContext = createContext();
 
@@ -17,8 +17,10 @@ export const AuthProvider = ({ children }) => {
 
   // STOMP client
   const clientRef = useRef(null);
-  
-  const savedStatus = sessionStorage.getItem("connectedUsers") ? JSON.parse(sessionStorage.getItem("connectedUsers")).find(u => u.username == JSON.parse(sessionStorage.getItem("loginInfo")).username).status : "OFFLINE";
+
+  const savedStatus = sessionStorage.getItem("connectedUsers")
+    ? JSON.parse(sessionStorage.getItem("connectedUsers")).find((u) => u.username == JSON.parse(sessionStorage.getItem("loginInfo")).username).status
+    : "OFFLINE";
   const statusRef = useRef(savedStatus || "ONLINE");
   const [connectedUsers, setConnectedUsers] = useState([]);
 
@@ -42,9 +44,9 @@ export const AuthProvider = ({ children }) => {
       // 로그인 시 -> 소켓 연결
       const token = auth.tokens.accessToken;
       const stompHeaders = {
-        "username": auth.loginInfo.username,
-        "status": statusRef.current,
-      }
+        username: auth.loginInfo.username,
+        status: statusRef.current,
+      };
       const client = new Client({
         webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
         connectHeaders: { Authorization: `Bearer ${token}` },
@@ -53,14 +55,18 @@ export const AuthProvider = ({ children }) => {
         onConnect: () => {
           console.log("WS connected");
           // 예: /topic/users 구독
-          client.subscribe("/topic/users", frame => {
-            console.log("socket Subscribe success!");
-            const users = JSON.parse(frame.body);
-            setConnectedUsers(users);
-            sessionStorage.setItem("connectedUsers", JSON.stringify(users));
-          }, stompHeaders);
+          client.subscribe(
+            "/topic/users",
+            (frame) => {
+              console.log("socket Subscribe success!");
+              const users = JSON.parse(frame.body);
+              setConnectedUsers(users);
+              sessionStorage.setItem("connectedUsers", JSON.stringify(users));
+            },
+            stompHeaders
+          );
         },
-        onStompError: err => console.error(err),
+        onStompError: (err) => console.error(err),
       });
       client.activate();
       clientRef.current = client;
@@ -91,7 +97,7 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.setItem("tokens", JSON.stringify(tokens));
     console.log(JSON.stringify(tokens));
     console.log(JSON.stringify(loginInfo));
-    
+
     toast.success("로그인 되었습니다.");
     navi("/");
   };
@@ -109,8 +115,5 @@ export const AuthProvider = ({ children }) => {
     toast.info("로그아웃 되었습니다.");
   };
 
-  return (
-    <AuthContext.Provider value={{ auth, login, logout, stompClient: clientRef, connectedUsers, userStatus: statusRef }}>
-      {children}
-    </AuthContext.Provider>);
+  return <AuthContext.Provider value={{ auth, login, logout, stompClient: clientRef, connectedUsers, userStatus: statusRef }}>{children}</AuthContext.Provider>;
 };
