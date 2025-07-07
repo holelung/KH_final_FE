@@ -1,11 +1,39 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Saintra_Logo from "/src/assets/Saintra.png";
+import {
+  UserPlusIcon,
+  UsersIcon,
+  DocumentMagnifyingGlassIcon,
+  MegaphoneIcon,
+  ChatBubbleLeftRightIcon,
+  UserCircleIcon,
+  CalendarDaysIcon,
+  BuildingOffice2Icon,
+  ChatBubbleOvalLeftEllipsisIcon,
+  PresentationChartBarIcon
+} from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const navi = useNavigate();
-  const {logout} = useContext(AuthContext);
+  const {auth, connectedUsers} = useContext(AuthContext);
+  const myUsername = auth.loginInfo.username;
+  const [userStatus, setUserStatus] = useState("OFFLINE");
+
+  useEffect(()=>{ 
+    const users = connectedUsers;
+    const me = users.find(u => u.username == myUsername);
+    if (me) setUserStatus(me.status); // 예: "ONLINE", "AWAY" 등
+  },[])
+
+
+  const changeStatus = () => {
+    toast.info("상태변경 버튼 클릭!");
+  }
+
+
 
   return (
 
@@ -17,43 +45,53 @@ const Navbar = () => {
           </div>
         </section>
         <section className="w-full h-full p-4 font-PyeojinGothicM text-xl flex flex-col justify-start gap-6">
-          <div onClick={() => navi("/test")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">1</div>
-            <div className="flex justify-center items-center">TEST</div>
+          <div onClick={() => navi("/approve-join")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <UserPlusIcon className="size-8 flex justify-center items-center" />
+            <div className="flex justify-center items-center">가입승인</div>
+          </div>
+          <div onClick={() => navi("/user-manage")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <UsersIcon className="size-8 flex justify-center items-center" />
+            <div className="flex justify-center items-center">유저관리</div>
+          </div>
+          <div onClick={() => navi("/log")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <DocumentMagnifyingGlassIcon className="size-8 flex justify-center items-center"></DocumentMagnifyingGlassIcon>
+            <div className="flex justify-center items-center">로그조회</div>
           </div>
           <div onClick={() => navi("/boards?type=bulletin&page=1")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">2</div>
+            <MegaphoneIcon className="size-8 flex justify-center items-center"></MegaphoneIcon>
             <div className="flex justify-center items-center">공지사항</div>
           </div>
           <div onClick={() => navi("/boards?type=free&page=1")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">3</div>
+            <ChatBubbleLeftRightIcon className="size-8 flex justify-center items-center"></ChatBubbleLeftRightIcon>
             <div className="flex justify-center items-center">자유게시판</div>
           </div>
           <div onClick={() => navi("/boards?type=anonymous&page=1")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">4</div>
+            <UserCircleIcon className="size-8 flex justify-center items-center"></UserCircleIcon>
             <div className="flex justify-center items-center">익명게시판</div>
           </div>
           <div onClick={() => navi("/calendar")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">5</div>
+            <CalendarDaysIcon className="size-8 flex justify-center items-center"></CalendarDaysIcon>
             <div className="flex justify-center items-center">캘린더</div>
           </div>
           <div onClick={() => navi("/meetingroom")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">6</div>
+            <PresentationChartBarIcon className="size-8 flex justify-center items-center"></PresentationChartBarIcon>
             <div className="flex justify-center items-center">회의실</div>
           </div>
           <div onClick={() => navi("/chat")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">7</div>
+            <ChatBubbleOvalLeftEllipsisIcon className="size-8 flex justify-center items-center"></ChatBubbleOvalLeftEllipsisIcon>
             <div className="flex justify-center items-center">채팅</div>
           </div>
           <div onClick={() => navi("/department")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">8</div>
+            <BuildingOffice2Icon className="size-8 flex justify-center items-center"></BuildingOffice2Icon>
             <div className="flex justify-center items-center">부서</div>
           </div>
         </section>
         <section className="w-full h-32 p-4 font-PyeojinGothicB text-lg flex flex-col justify-center">
           <div className="w-full h-8 flex justify-start items-center gap-2">
-            <div className="size-8 flex justify-center items-center">1</div>
-            <div className="flex justify-center items-center cursor-pointer select-none" onClick={() => logout()}>로그아웃</div>
+            <div className="size-8 flex justify-center items-center">
+              <span className={`inline-block w-5 h-5 rounded-full border-2 ${userStatus === "ONLINE" ? ("bg-green-500" ): (userStatus === "AWAY" ? ("bg-yellow-400"): ("bg-gray-400"))}`}></span>
+            </div>
+            <div className="flex text-2xl justify-center items-center cursor-pointer select-none" onClick={() => changeStatus()}>{auth.loginInfo.realname}</div>
           </div>
         </section>
         

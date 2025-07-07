@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { apiService } from "../../../api/apiService";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../Context/AuthContext";
 
 const Header = () => {
+  const {logout} = useContext(AuthContext);
   const navi = useNavigate();
 
   useEffect(() => {
@@ -28,6 +30,12 @@ const Header = () => {
               className="mr-2 flex justify-center items-center"
             >
               내 정보(사진)
+            </div>
+            <div
+              onClick={() => logout()}
+              className="mx-2 flex justify-center items-center"
+            >
+              로그아웃
             </div>
           </div>
         </div>
