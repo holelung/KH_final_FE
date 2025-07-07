@@ -18,21 +18,33 @@ import { toast } from "react-toastify";
 
 const Navbar = () => {
   const navi = useNavigate();
-  const {auth, connectedUsers} = useContext(AuthContext);
-  const [userStatus, setUserStatus] = useState("OFFLINE");
-
-  useEffect(()=>{ 
-    const myUsername = auth.loginInfo?.username;
-    const me = connectedUsers.find(u => u.username == myUsername);
-    if (me) setUserStatus(me.status); // 예: "ONLINE", "AWAY" 등
-  },[auth, connectedUsers])
+  const {auth, connectedUsers, stompClient, userStatus} = useContext(AuthContext);
+  // const [userStatus, setUserStatus] = useState("OFFLINE");
+  // useEffect(()=>{ 
+  //   const myUsername = auth.loginInfo?.username;
+  //   const me = connectedUsers.find(u => u.username == myUsername);
+  //   if (me) setUserStatus(me.status); // 예: "ONLINE", "AWAY" 등
+  // },[auth, connectedUsers])
 
 
   const changeStatus = () => {
-    toast.info("상태변경 버튼 클릭!");
-  }
-
-
+    const client = stompClient.current;
+    if (client && client.connected) {
+      if(userStatus.current === "ONLINE"){
+        userStatus.current = "AWAY";
+      }else{
+        userStatus.current = "ONLINE";
+      }
+      client.publish({
+        destination: '/app/status.update',  // app prefix 확인
+        body: JSON.stringify({
+          username: auth.loginInfo.username,
+          status: userStatus.current,
+        }),
+      });
+      // publish 이후 잠시 있다가 subscribe 콜백에서 새 리스트가 날아옵니다
+    }
+  };
 
   return (
 
@@ -96,7 +108,7 @@ const Navbar = () => {
         <section className="w-full h-32 p-4 font-PyeojinGothicB text-lg flex flex-col justify-center">
           <div className="w-full h-8 flex justify-start items-center gap-2">
             <div className="size-8 flex justify-center items-center">
-              <span className={`inline-block w-5 h-5 rounded-full border-2 ${userStatus === "ONLINE" ? ("bg-green-500" ): (userStatus === "AWAY" ? ("bg-yellow-400"): ("bg-gray-400"))}`}></span>
+              <span className={`inline-block w-5 h-5 rounded-full border-2 ${userStatus.current === "ONLINE" ? ("bg-green-500" ): (userStatus.current === "AWAY" ? ("bg-yellow-400"): ("bg-gray-400"))}`}></span>
             </div>
             <div className="flex text-2xl justify-center items-center cursor-pointer select-none" onClick={() => changeStatus()}>{auth.loginInfo.realname}</div>
           </div>

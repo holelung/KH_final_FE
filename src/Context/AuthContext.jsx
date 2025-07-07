@@ -17,6 +17,9 @@ export const AuthProvider = ({ children }) => {
 
   // STOMP client
   const clientRef = useRef(null);
+  
+  const savedStatus = JSON.parse(sessionStorage.getItem("connectedUsers")).find(u => u.username == JSON.parse(sessionStorage.getItem("loginInfo")).username).status;
+  const statusRef = useRef(savedStatus || "ONLINE");
   const [connectedUsers, setConnectedUsers] = useState([]);
 
   // 세션에 이미 로그인 정보가 있으면 context 초기화
@@ -40,7 +43,7 @@ export const AuthProvider = ({ children }) => {
       const token = auth.tokens.accessToken;
       const stompHeaders = {
         "username": auth.loginInfo.username,
-        "status":"online",
+        "status": statusRef.current,
       }
       const client = new Client({
         webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
@@ -107,7 +110,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout, stompClient: clientRef, connectedUsers }}>
+    <AuthContext.Provider value={{ auth, login, logout, stompClient: clientRef, connectedUsers, userStatus: statusRef }}>
       {children}
     </AuthContext.Provider>);
 };
