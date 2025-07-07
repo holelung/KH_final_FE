@@ -7,16 +7,16 @@ const Header = () => {
   const {logout} = useContext(AuthContext);
   const navi = useNavigate();
 
-  useEffect(() => {
-    apiService
-      .get(`http://localhost:8080/api/files/users`)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   apiService
+  //     .get(`http://localhost:8080/api/files/users`)
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   return (
     <>

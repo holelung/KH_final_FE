@@ -19,14 +19,13 @@ import { toast } from "react-toastify";
 const Navbar = () => {
   const navi = useNavigate();
   const {auth, connectedUsers} = useContext(AuthContext);
-  const myUsername = auth.loginInfo.username;
   const [userStatus, setUserStatus] = useState("OFFLINE");
 
   useEffect(()=>{ 
-    const users = connectedUsers;
-    const me = users.find(u => u.username == myUsername);
+    const myUsername = auth.loginInfo?.username;
+    const me = connectedUsers.find(u => u.username == myUsername);
     if (me) setUserStatus(me.status); // 예: "ONLINE", "AWAY" 등
-  },[])
+  },[auth, connectedUsers])
 
 
   const changeStatus = () => {
