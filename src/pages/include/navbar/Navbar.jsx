@@ -2,6 +2,15 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Saintra_Logo from "/src/assets/Saintra.png";
+import {
+  BuildingOffice2Icon,
+  CalendarDaysIcon,
+  ChatBubbleLeftRightIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
+  MegaphoneIcon,
+  PresentationChartBarIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/solid";
 
 const Navbar = () => {
   const navi = useNavigate();
@@ -41,10 +50,6 @@ const Navbar = () => {
           </div>
         </section>
         <section className="w-full h-full p-4 font-PyeojinGothicM text-xl flex flex-col justify-start gap-6">
-          <div onClick={() => navi("/test")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
-            <div className="size-8 flex justify-center items-center">1</div>
-            <div className="flex justify-center items-center">TEST</div>
-          </div>
           <div onClick={() => navi("/boards?type=bulletin&page=1")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
             <MegaphoneIcon className="size-8 flex justify-center items-center"></MegaphoneIcon>
             <div className="flex justify-center items-center">공지사항</div>
