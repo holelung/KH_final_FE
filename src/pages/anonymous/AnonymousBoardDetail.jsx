@@ -14,12 +14,11 @@ function AnonymousBoardDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
-
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`/api/board/${id}`)
+      .get(`http://localhost:8080/api/board/${id}`)
       .then((res) => {
         setBoard(res.data);
         setEditTitle(res.data.title);
@@ -44,7 +43,7 @@ function AnonymousBoardDetail() {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
     axios
-      .delete(`/api/board/${id}`)
+      .delete(`http://localhost:8080/api/board/${id}`)
       .then(() => {
         alert("게시글이 삭제되었습니다.");
         navigate("/");
@@ -58,7 +57,7 @@ function AnonymousBoardDetail() {
   const handleUpdate = (e) => {
     e.preventDefault();
     axios
-      .put(`/api/board/${id}`, { title: editTitle, content: editContent })
+      .put(`http://localhost:8080/api/board/${id}`, { title: editTitle, content: editContent })
       .then(() => {
         alert("수정 완료");
         setBoard({ ...board, title: editTitle, content: editContent });

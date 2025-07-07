@@ -20,6 +20,9 @@ import ModifyProfile from "./pages/mypage/ModifyProfile";
 import UpdatePassword from "./pages/mypage/UpdatePassword";
 import UpdateEmail from "./pages/mypage/UpdateEmail";
 import UserAttendance from "./pages/mypage/UserAttendance";
+import AnonymousBoardList from "./pages/anonymous/AnonymousBoardList";
+import AnonymousBoardDetail from "./pages/anonymous/AnonymousBoardDetail";
+import AnonymousBoardWrite from "./pages/anonymous/AnonymousBoardWrite";
 
 function App() {
   return (
@@ -52,6 +55,9 @@ function App() {
             <Route path="updateEmail" element={<UpdateEmail />} />
             <Route path="attendance" element={<UserAttendance />} />
           </Route>
+          <Route path="/anonymous" element={<AnonymousBoardList />} />
+          <Route path="/anonymous/write" element={<AnonymousBoardWrite />} />
+          <Route path="/anonymous/:id" element={<AnonymousBoardDetail />} />
         </Route>
       </Routes>
     </AuthProvider>

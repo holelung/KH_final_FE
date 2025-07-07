@@ -11,10 +11,9 @@ function AnonymousCommentList({ boardId }) {
 
   const myUserId = getUserId();
 
-  // 댓글 목록 불러오기
   const loadComments = () => {
     axios
-      .get(`/api/comments?boardId=${boardId}`)
+      .get(`http://localhost:8080/api/comments?boardId=${boardId}`)
       .then((res) => setComments(res.data))
       .catch((err) => console.error("댓글 불러오기 실패:", err));
   };
@@ -23,13 +22,12 @@ function AnonymousCommentList({ boardId }) {
     loadComments();
   }, [boardId]);
 
-  // 댓글 등록
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
     axios
-      .post("/api/comments", {
+      .post("http://localhost:8080/api/comments", {
         boardId,
         userId: myUserId,
         content: newComment,
@@ -44,12 +42,11 @@ function AnonymousCommentList({ boardId }) {
       });
   };
 
-  // 댓글 수정
   const handleUpdate = (id) => {
     if (!editingContent.trim()) return;
 
     axios
-      .put(`/api/comments/${id}`, { content: editingContent })
+      .put(`http://localhost:8080/api/comments/${id}`, { content: editingContent })
       .then(() => {
         setEditingId(null);
         setEditingContent("");
@@ -61,12 +58,11 @@ function AnonymousCommentList({ boardId }) {
       });
   };
 
-  // 댓글 삭제
   const handleDelete = (id) => {
     if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
 
     axios
-      .delete(`/api/comments/${id}`)
+      .delete(`http://localhost:8080/api/comments/${id}`)
       .then(() => loadComments())
       .catch((err) => {
         console.error("댓글 삭제 실패:", err);

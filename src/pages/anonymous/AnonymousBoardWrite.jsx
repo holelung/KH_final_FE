@@ -23,7 +23,7 @@ function AnonymousBoardWrite() {
     };
 
     axios
-      .post("/api/board", newBoard)
+      .post("http://localhost:8080/api/board", newBoard)
       .then((res) => {
         const boardId = res.data.id;
         alert("익명 게시글이 등록되었습니다.");

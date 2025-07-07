@@ -9,28 +9,26 @@ function AnonymousBoardList() {
   const [showMine, setShowMine] = useState(false);
   const myUserId = getUserId();
 
-  /** 전체 또는 내 글 불러오기 */
   const loadBoards = () => {
-    const api = showMine ? fetchMyBoards(myUserId) : fetchAllBoards();
-    api
-      .then((res) => {
-        setBoards(res.data);
-      })
+    const url = showMine ? `http://localhost:8080/api/board/my?userId=${myUserId}` : `http://localhost:8080/api/board`;
+
+    axios
+      .get(url)
+      .then((res) => setBoards(res.data))
       .catch((err) => console.error("목록 조회 실패:", err));
   };
 
-  /** 최초 & showMine 변경 시 재호출 */
   useEffect(loadBoards, [showMine]);
 
-  /** 검색 처리 */
   const handleSearch = () => {
     if (!keyword.trim()) {
       loadBoards();
       return;
     }
+
     const url = showMine
-      ? `/api/board/search/my?keyword=${encodeURIComponent(keyword)}&userId=${myUserId}`
-      : `/api/board/search?keyword=${encodeURIComponent(keyword)}`;
+      ? `http://localhost:8080/api/board/search/my?keyword=${encodeURIComponent(keyword)}&userId=${myUserId}`
+      : `http://localhost:8080/api/board/search?keyword=${encodeURIComponent(keyword)}`;
 
     axios
       .get(url)
