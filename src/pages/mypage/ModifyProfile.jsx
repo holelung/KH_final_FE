@@ -93,6 +93,19 @@ const ModifyProfile = () => {
 
   const unregister = () => {
     // 회원 탈퇴 
+    if(!window.confirm("정말로 탈퇴하시겠습니까?")) return;
+
+    apiService.delete("/mypage")
+      .then(response => {
+        if(response.data.success){
+          toast.success("회원 탈퇴가 완료되었습니다.");
+          navi("/");
+        }
+      })
+      .catch(error => {
+        toast.error(error.response.data.message);
+        console.error(error);
+      });
   }
 
   return (
@@ -139,8 +152,8 @@ const ModifyProfile = () => {
                 id="address1" 
                 type="text" 
                 placeholder="주소"
-                className="w-4/5 h-full p-4 text-xl border-2 border-gray-400 rounded-lg" 
-                value={userInfo.address1}
+                className="w-4/5 h-full p-4 text-xl border-2 border-gray-400 rounded-lg"
+                defaultValue={userInfo.address1}
               />
               <button 
                 type="button" 
