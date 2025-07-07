@@ -33,8 +33,12 @@ const Navbar = () => {
             <div className="size-8 flex justify-center items-center">4</div>
             <div className="flex justify-center items-center">캘린더</div>
           </div>
-          <div onClick={() => navi("/chat")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+          <div onClick={() => navi("/meetingroom")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
             <div className="size-8 flex justify-center items-center">5</div>
+            <div className="flex justify-center items-center">회의실</div>
+          </div>
+          <div onClick={() => navi("/chat")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+            <div className="size-8 flex justify-center items-center">6</div>
             <div className="flex justify-center items-center">채팅</div>
           </div>
         </section>
