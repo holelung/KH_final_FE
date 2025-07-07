@@ -5,10 +5,9 @@ import Saintra_Logo from "/src/assets/Saintra.png";
 
 const Navbar = () => {
   const navi = useNavigate();
-  const {logout} = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
 
   return (
-
     <>
       <div className="absolute top-0 left-0 w-48 h-full z-10 bg-saintrablue font-PretendardM text-white flex flex-col justify-start box-border">
         <section className="w-full h-32 p-4 flex justify-center items-center">
@@ -44,6 +43,7 @@ const Navbar = () => {
           <div onClick={() => navi("/chat")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
             <div className="size-8 flex justify-center items-center">7</div>
             <div className="flex justify-center items-center">채팅</div>
+          </div>
           <div onClick={() => navi("/department")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
             <div className="size-8 flex justify-center items-center">8</div>
             <div className="flex justify-center items-center">부서</div>
@@ -52,10 +52,11 @@ const Navbar = () => {
         <section className="w-full h-32 p-4 font-PyeojinGothicB text-lg flex flex-col justify-center">
           <div className="w-full h-8 flex justify-start items-center gap-2">
             <div className="size-8 flex justify-center items-center">1</div>
-            <div className="flex justify-center items-center cursor-pointer select-none" onClick={() => logout()}>로그아웃</div>
+            <div className="flex justify-center items-center cursor-pointer select-none" onClick={() => logout()}>
+              로그아웃
+            </div>
           </div>
         </section>
-        
       </div>
     </>
   );

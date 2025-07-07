@@ -3,6 +3,7 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { apiService } from "../../../api/apiService";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const BoardEditer = () => {
   const [type, setType] = useState("");
@@ -25,9 +26,8 @@ const BoardEditer = () => {
 
   useEffect(() => {
     if (!location.state) {
-      alert("잘못된 접근 입니다.");
-      navi("/");
-      return;
+      toast.error("잘못된 접근 입니다.");
+      navi(-1);
     }
     setType(location.state.type);
   }, []);
@@ -200,7 +200,7 @@ const BoardEditer = () => {
               </ul>
             </div>
           )}
-          <ReactQuill ref={quillRef} value={content} onChange={handleContent} modules={customModules} theme="snow" />
+          <ReactQuill ref={quillRef} value={content} onChange={handleContent} modules={customModules} theme="snow" className="quill-editor" />
         </section>
         <section>
           <div className="flex justify-end gap-2">

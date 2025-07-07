@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { apiService } from "../../../api/apiService";
-import axios from "axios";
+import { AuthContext } from "../../../Context/AuthContext";
+import { toast } from "react-toastify";
+import Loading from "../../../Components/Loading/Loading";
 
 const BoardDetail = () => {
   const [type, setType] = useState("");
@@ -10,6 +12,7 @@ const BoardDetail = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [createDate, setCreateDate] = useState("");
+  const [userId, setUserId] = useState("");
   const [username, setUsername] = useState("");
   const [realname, setRealname] = useState("");
   const [commentContent, setCommentContent] = useState("");
@@ -19,84 +22,113 @@ const BoardDetail = () => {
   const [endButton, setEndButton] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [commentSub, setCommentSub] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { auth } = useContext(AuthContext);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navi = useNavigate();
 
+  useEffect(() => {}, [isLoading]);
+
   useEffect(() => {
     setType(searchParams.get("type"));
     setBoardId(searchParams.get("boardId"));
-    console.log(searchParams);
   }, [searchParams]);
 
   useEffect(() => {
     if (type && boardId) {
+      setIsLoading(true);
       apiService
         .get(`http://localhost:8080/api/boards/detail?${searchParams.toString()}`)
         .then((res) => {
-          console.log(res);
           setTitle(res.data.data.boardDetail.title);
           setContent(res.data.data.boardDetail.content);
           setCreateDate(res.data.data.boardDetail.createDate);
+          setUserId(res.data.data.boardDetail.userId);
           setUsername(res.data.data.boardDetail.username);
           setRealname(res.data.data.boardDetail.realname);
         })
         .catch((err) => {
-          console.log(err);
-          alert("잘못된 접근 입니다.");
-          navi("/");
-          return;
+          toast.error(`${err.code}: 잘못된 접근 입니다.`);
+          navi(-1);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   }, [type, boardId]);
 
   useEffect(() => {
     if (type && boardId) {
+      setIsLoading(true);
       apiService
         .get(`http://localhost:8080/api/comments?${searchParams.toString()}&page=${commentPage}`)
         .then((res) => {
-          console.log(res);
           setCommentList(res.data.data.commentList);
           setStartButton(res.data.data.startButton);
           setEndButton(res.data.data.endButton);
           setMaxPage(res.data.data.maxPage);
         })
         .catch((err) => {
-          console.log(err);
+          toast.error(`${err}: 잘못된 접근 입니다.`);
+          navi(-1);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   }, [type, boardId, commentPage, commentSub]);
 
   const handleCommentContent = (e) => {
-    console.log(commentContent);
     setCommentContent(e.target.value);
   };
 
   const handleCommentPage = (e) => {
-    console.log(e.target.innerHTML);
     setCommentPage(e.target.innerHTML);
   };
 
   const handleCommentSubmit = () => {
-    apiService
-      .post(`http://localhost:8080/api/comments`, { type: type, boardId: boardId, content: commentContent })
-      .then((res) => {
-        console.log(res);
-        setCommentContent("");
-        setCommentPage(1);
-        setCommentSub(!commentSub);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (type && boardId && commentContent) {
+      setIsLoading(true);
+      apiService
+        .post(`http://localhost:8080/api/comments`, { type: type, boardId: boardId, content: commentContent })
+        .then((res) => {
+          setCommentContent("");
+          setCommentPage(1);
+          setCommentSub(!commentSub);
+        })
+        .catch((err) => {
+          toast.error(`${err}: 잘못된 접근 입니다.`);
+          navi(-1);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   };
 
   return (
     <>
+      {isLoading ? <Loading /> : <></>}
       <div className="w-full min-h-full flex flex-col gap-2">
         <section className="w-full flex flex-col gap-2">
-          <div className="w-full text-2xl">{title ? title : "글 제목"}</div>
+          <div className="w-full text-2xl flex justify-between items-center">
+            <div>{title ? title : "글 제목"}</div>
+            {userId == auth.loginInfo.id ? (
+              <div className="flex gap-1">
+                <button type="button" className="h-full px-2 text-lg text-white bg-yellow-300 rounded-sm">
+                  수정
+                </button>
+                <button type="button" className="h-full px-2 text-lg text-white bg-red-500 rounded-sm">
+                  삭제
+                </button>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
           <div className="w-full flex justify-end gap-2">
             {type === "anonymous" ? (
               ""
@@ -130,7 +162,21 @@ const BoardDetail = () => {
             commentList.map((comment) =>
               type === "anonymous" ? (
                 <div key={comment.id} className="w-full border-t-2 border-saintragray flex-col gap-2">
-                  <div className="px-2 py-1 border-b-1 border-saintragray text-lg">익명의 댓글</div>
+                  <div className="px-2 py-1 text-lg border-b-1 border-saintragray flex justify-between">
+                    <div>익명의 댓글</div>
+                    {auth.loginInfo.id == comment.userId ? (
+                      <div className="flex gap-1">
+                        <button type="button" className="h-full px-2 text-white bg-yellow-300 rounded-sm">
+                          수정
+                        </button>
+                        <button type="button" className="h-full px-2 text-white bg-red-500 rounded-sm">
+                          삭제
+                        </button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
                   <div className="px-3 py-1 flex justify-between">
                     <div>{comment.content}</div>
                     <div>{comment.createDate}</div>
@@ -138,8 +184,22 @@ const BoardDetail = () => {
                 </div>
               ) : (
                 <div key={comment.id} className="w-full border-t-2 border-saintragray flex-col gap-2">
-                  <div className="px-2 py-1 border-b-1 border-saintragray text-lg">
-                    {comment.realname}({comment.username})
+                  <div className="px-2 py-1 text-lg border-b-1 border-saintragray flex justify-between">
+                    <div>
+                      {comment.realname}({comment.username})
+                    </div>
+                    {auth.loginInfo.id == comment.userId ? (
+                      <div className="flex gap-1">
+                        <button type="button" className="h-full px-2 text-white bg-yellow-300 rounded-sm">
+                          수정
+                        </button>
+                        <button type="button" className="h-full px-2 text-white bg-red-500 rounded-sm">
+                          삭제
+                        </button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className="px-3 py-1 flex justify-between">
                     <div>{comment.content}</div>
