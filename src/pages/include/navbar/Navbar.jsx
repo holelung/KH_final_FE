@@ -50,6 +50,26 @@ const Navbar = () => {
           </div>
         </section>
         <section className="w-full h-full p-4 font-PyeojinGothicM text-xl flex flex-col justify-start gap-6">
+        {auth.loginInfo.deptId === 1 &&(
+            <>
+              <div onClick={() => navi("/approve-join")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+                <UserPlusIcon className="size-8 flex justify-center items-center" />
+                <div className="flex justify-center items-center">가입승인</div>
+              </div>
+              <div onClick={() => navi("/user-manage")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+                <UsersIcon className="size-8 flex justify-center items-center" />
+                <div className="flex justify-center items-center">유저관리</div>
+              </div>
+            </>
+          )}
+          {auth.loginInfo.deptId === 2 && (
+            <>
+              <div onClick={() => navi("/log")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
+                <DocumentMagnifyingGlassIcon className="size-8 flex justify-center items-center"></DocumentMagnifyingGlassIcon>
+                <div className="flex justify-center items-center">로그조회</div>
+              </div>
+            </>
+          )}
           <div onClick={() => navi("/boards?type=bulletin&page=1")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
             <MegaphoneIcon className="size-8 flex justify-center items-center"></MegaphoneIcon>
             <div className="flex justify-center items-center">공지사항</div>
