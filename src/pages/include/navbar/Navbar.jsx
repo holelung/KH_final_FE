@@ -44,6 +44,7 @@ const Navbar = () => {
           <div onClick={() => navi("/chat")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
             <div className="size-8 flex justify-center items-center">7</div>
             <div className="flex justify-center items-center">채팅</div>
+          </div>
           <div onClick={() => navi("/department")} className="w-full h-8 flex justify-start items-center gap-2 cursor-pointer">
             <div className="size-8 flex justify-center items-center">8</div>
             <div className="flex justify-center items-center">부서</div>
