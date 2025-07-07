@@ -10,6 +10,8 @@ import {
   MegaphoneIcon,
   PresentationChartBarIcon,
   UserCircleIcon,
+  UserPlusIcon,
+  UsersIcon,
 } from "@heroicons/react/24/solid";
 
 const Navbar = () => {

@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   const clientRef = useRef(null);
 
   const savedStatus = sessionStorage.getItem("connectedUsers")
-    ? JSON.parse(sessionStorage.getItem("connectedUsers")).find((u) => u.username == JSON.parse(sessionStorage.getItem("loginInfo")).username).status
+    ? JSON.parse(sessionStorage.getItem("connectedUsers")).find((u) => u.username == sessionStorage.getItem("loginInfo") ? JSON.parse(sessionStorage.getItem("loginInfo")).username : "OFFLINE").status
     : "OFFLINE";
   const statusRef = useRef(savedStatus || "ONLINE");
   const [connectedUsers, setConnectedUsers] = useState([]);
