@@ -20,6 +20,9 @@ import ModifyProfile from "./pages/mypage/ModifyProfile";
 import UpdatePassword from "./pages/mypage/UpdatePassword";
 import UpdateEmail from "./pages/mypage/UpdateEmail";
 import UserAttendance from "./pages/mypage/UserAttendance";
+import ApproveJoin from "./pages/admin/ApproveJoin";
+import Log from "./pages/admin/Log";
+import UserManage from "./pages/admin/UserManage";
 
 
 function App() {
@@ -55,6 +58,9 @@ function App() {
             <Route path="updateEmail" element={<UpdateEmail />} />
             <Route path="attendance" element={<UserAttendance />} />
           </Route>
+          <Route path="approve-join" element={<ApproveJoin />} />
+          <Route path="user-manage" element={<UserManage />}/>
+          <Route path="log" element={<Log />}/>
         </Route>
       </Routes>
     </AuthProvider>
