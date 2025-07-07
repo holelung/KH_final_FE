@@ -56,11 +56,11 @@ function App() {
             <Route path="updateEmail" element={<UpdateEmail />} />
             <Route path="attendance" element={<UserAttendance />} />
           </Route>
-          <Route path="/" element={<DisplayArea children={<></>} />} />
-          <Route path="/test" element={<DisplayArea children={<Test />} />} />
-          <Route path="/boards" element={<DisplayArea children={<BoardList />} />} />
-          <Route path="/boards/edit" element={<DisplayArea children={<BoardEditer />} />} />
-          <Route path="/boards/detail" element={<DisplayArea children={<BoardDetail />} />} />
+          <Route path="/" element={<></>} />
+          <Route path="/test" element={<Test />} />
+          <Route path="/boards" element={<BoardList />} />
+          <Route path="/boards/edit" element={<BoardEditer />} />
+          <Route path="/boards/detail" element={<BoardDetail />} />
           <Route path="/department" element={<DepartmentList />} />
           <Route path="/department/:id" element={<DepartmentDetail />} />
         </Route>
