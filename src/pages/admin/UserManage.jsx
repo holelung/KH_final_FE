@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../Components/pagination/Pagination";
 import { apiService } from "../../api/apiService";
 import UserDetailModal from "./UserDetailModal";
 import UserUpdateModal from "./UserUpdateModal";
+import { AuthContext } from "../../Context/AuthContext";
 
 const UserManage = () => {
+  const {auth} = useContext(AuthContext);
   const navi = useNavigate();
   const [data, setData] = useState([]);
   const [request, setRequest] = useState({
@@ -37,7 +39,7 @@ const UserManage = () => {
       }
     })
 
-  },[currentPage, request])
+  },[currentPage, request, approve])
 
 
   const handleSearch = () => {
@@ -151,6 +153,7 @@ const UserManage = () => {
         onClose={handleDetailClose}
         user={selectedUser}
         approve={handleApprove}
+        auth={auth}
       />
     </>
   )
