@@ -15,7 +15,7 @@ const DepartmentDetail = () => {
     }
 
     apiService
-      .get(`http://localhost:8080/api/departments/${params.id}`)
+      .get(`/departments/${params.id}`)
       .then((res) => {
         console.log(res);
       })

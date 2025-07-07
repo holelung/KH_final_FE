@@ -41,7 +41,7 @@ const BoardDetail = () => {
     if (type && boardId) {
       setIsLoading(true);
       apiService
-        .get(`http://localhost:8080/api/boards/detail?${searchParams.toString()}`)
+        .get(`/boards/detail?${searchParams.toString()}`)
         .then((res) => {
           setTitle(res.data.data.boardDetail.title);
           setContent(res.data.data.boardDetail.content);
@@ -64,7 +64,7 @@ const BoardDetail = () => {
     if (type && boardId) {
       setIsLoading(true);
       apiService
-        .get(`http://localhost:8080/api/comments?${searchParams.toString()}&page=${commentPage}`)
+        .get(`/comments?${searchParams.toString()}&page=${commentPage}`)
         .then((res) => {
           setCommentList(res.data.data.commentList);
           setStartButton(res.data.data.startButton);
@@ -93,7 +93,7 @@ const BoardDetail = () => {
     if (type && boardId && commentContent) {
       setIsLoading(true);
       apiService
-        .post(`http://localhost:8080/api/comments`, { type: type, boardId: boardId, content: commentContent })
+        .post(`/comments`, { type: type, boardId: boardId, content: commentContent })
         .then((res) => {
           setCommentContent("");
           setCommentPage(1);

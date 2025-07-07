@@ -46,7 +46,7 @@ const BoardList = () => {
           setBoardTitle("부서게시판");
       }
       apiService
-        .get(`http://localhost:8080/api/boards?${searchParams.toString()}`)
+        .get(`/boards?${searchParams.toString()}`)
         .then((res) => {
           console.log(res);
           setBoardList(res.data.data.boardList);
@@ -80,7 +80,7 @@ const BoardList = () => {
     setSearchParams(searchParams);
 
     apiService
-      .get(`http://localhost:8080/api/boards?${searchParams.toString()}`)
+      .get(`/boards?${searchParams.toString()}`)
       .then((res) => {
         console.log(res.data);
         setBoardList(res.data.data.boardList);

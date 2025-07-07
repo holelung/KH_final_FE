@@ -44,7 +44,7 @@ const BoardEditer = () => {
       for (let fileId of prevFileIds) {
         if (!currFileIds.has(fileId)) {
           apiService
-            .delete(`http://localhost:8080/api/files/boards/${fileId}`)
+            .delete(`/files/boards/${fileId}`)
             .then(() => {
               setImageFiles((ids) => ids.filter((id) => id !== fileId));
             })
@@ -111,7 +111,7 @@ const BoardEditer = () => {
     formData.append("file", file);
 
     apiService
-      .post(`http://localhost:8080/api/files/boards`, formData, {
+      .post(`/files/boards`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
@@ -138,7 +138,7 @@ const BoardEditer = () => {
     formData.append("file", file);
 
     apiService
-      .post(`http://localhost:8080/api/files/boards`, formData, {
+      .post(`/files/boards`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
@@ -162,7 +162,7 @@ const BoardEditer = () => {
     e.preventDefault();
     console.log(type);
     apiService
-      .post(`http://localhost:8080/api/boards`, { type: type, title: title, content: content, imageFiles: imageFiles })
+      .post(`/boards`, { type: type, title: title, content: content, imageFiles: imageFiles })
       .then((res) => {
         console.log(res);
         console.log(type);

@@ -14,7 +14,7 @@ const DepartmentList = () => {
 
   useEffect(() => {
     apiService
-      .get(`http://localhost:8080/api/departments`)
+      .get(`/departments`)
       .then((res) => {
         console.log(res);
         setDeptList(res.data.data);
@@ -37,7 +37,7 @@ const DepartmentList = () => {
       return;
     }
     apiService
-      .post(`http://localhost:8080/api/departments`, { departmentName: departmentName, personnel: personnel, inspect: inspect })
+      .post(`/departments`, { departmentName: departmentName, personnel: personnel, inspect: inspect })
       .then((res) => {
         console.log(res);
         setDeptInput(!deptInput);
@@ -51,7 +51,7 @@ const DepartmentList = () => {
     console.log(value);
     const deptId = value;
     apiService
-      .patch(`http://localhost:8080/api/departments/${deptId}`)
+      .patch(`/departments/${deptId}`)
       .then((res) => {
         console.log(res);
         isEnabling(!enabling);

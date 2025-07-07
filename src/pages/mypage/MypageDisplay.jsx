@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Outlet, useNavigate } from "react-router-dom";
-import { UserCircleIcon } from '@heroicons/react/24/solid'
-import {
-  UserIcon,
-  LockClosedIcon,
-  PhotoIcon,
-  UserMinusIcon,
-} from '@heroicons/react/24/outline'
-
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { UserIcon, LockClosedIcon, PhotoIcon, UserMinusIcon } from "@heroicons/react/24/outline";
 
 const MypageDisplay = () => {
-  
   const navi = useNavigate();
 
   return (
@@ -22,8 +15,7 @@ const MypageDisplay = () => {
         <Outlet />
       </div>
     </>
-  )
-
-}
+  );
+};
 
 export default MypageDisplay;
