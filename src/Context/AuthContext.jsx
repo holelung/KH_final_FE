@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   // STOMP client
   const clientRef = useRef(null);
   
-  const savedStatus = JSON.parse(sessionStorage.getItem("connectedUsers")).find(u => u.username == JSON.parse(sessionStorage.getItem("loginInfo")).username).status;
+  const savedStatus = sessionStorage.getItem("connectedUsers") ? JSON.parse(sessionStorage.getItem("connectedUsers")).find(u => u.username == JSON.parse(sessionStorage.getItem("loginInfo")).username).status : "OFFLINE";
   const statusRef = useRef(savedStatus || "ONLINE");
   const [connectedUsers, setConnectedUsers] = useState([]);
 
