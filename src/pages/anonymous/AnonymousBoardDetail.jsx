@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { getUserId } from "../../utils/userUtils";
 import { fetchFilesByBoardId, downloadFileUrl } from "../../api/anonymousFileApi";
 import CommentList from "./AnonymousCommentList";
+import axios from "axios";
 
 function AnonymousBoardDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const myUserId = getUserId();
-
   const [board, setBoard] = useState(null);
+  const [files, setFiles] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
-  const [files, setFiles] = useState([]);
+  const myUserId = getUserId();
 
   useEffect(() => {
     axios
@@ -24,97 +23,72 @@ function AnonymousBoardDetail() {
         setEditTitle(res.data.title);
         setEditContent(res.data.content);
       })
-      .catch((err) => {
-        console.error("조회 실패:", err);
-        alert("게시글을 불러오는 데 실패했습니다.");
-        navigate("/");
-      });
+      .catch(() => navigate("/anonymous"));
 
-    fetchFiles();
-  }, [id, navigate]);
-
-  const fetchFiles = () => {
     fetchFilesByBoardId(id)
       .then((res) => setFiles(res.data))
-      .catch((err) => console.error("첨부파일 조회 실패:", err));
-  };
+      .catch(console.error);
+  }, [id, navigate]);
 
-  const handleDelete = () => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
-
-    axios
-      .delete(`http://localhost:8080/api/board/${id}`)
-      .then(() => {
-        alert("게시글이 삭제되었습니다.");
-        navigate("/");
-      })
-      .catch((err) => {
-        console.error("삭제 실패:", err);
-        alert("삭제 중 오류가 발생했습니다.");
-      });
-  };
-
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    axios
-      .put(`http://localhost:8080/api/board/${id}`, { title: editTitle, content: editContent })
-      .then(() => {
-        alert("수정 완료");
-        setBoard({ ...board, title: editTitle, content: editContent });
-        setIsEditing(false);
-      })
-      .catch((err) => {
-        console.error("수정 실패:", err);
-        alert("수정 중 오류 발생");
+    try {
+      await axios.put(`http://localhost:8080/api/board/${id}`, {
+        title: editTitle,
+        content: editContent,
       });
+      alert("수정 완료");
+      setIsEditing(false);
+      setBoard({ ...board, title: editTitle, content: editContent });
+    } catch {
+      alert("수정 중 오류 발생");
+    }
   };
 
-  if (!board) return <p>게시글 로딩 중...</p>;
+  const handleDelete = async () => {
+    if (!window.confirm("삭제하시겠습니까?")) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/board/${id}`);
+      alert("삭제 완료");
+      navigate("/anonymous");
+    } catch {
+      alert("삭제 실패");
+    }
+  };
 
-  const isMyPost = board.userId === myUserId;
+  if (!board) return <p>로딩 중...</p>;
+
+  const isMine = board.userId === myUserId;
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="p-4 space-y-4">
       {isEditing ? (
-        <>
-          <h2>게시글 수정</h2>
-          <form onSubmit={handleUpdate}>
-            <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} style={{ width: "400px", padding: "8px" }} />
-            <textarea
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              style={{
-                width: "400px",
-                height: "150px",
-                padding: "8px",
-                marginTop: "10px",
-              }}
-            />
-            <div>
-              <button type="submit" style={{ marginTop: "10px", padding: "8px 16px" }}>
-                저장
-              </button>
-              <button type="button" onClick={() => setIsEditing(false)} style={{ marginLeft: "10px", padding: "8px 16px" }}>
-                취소
-              </button>
-            </div>
-          </form>
-        </>
+        <form onSubmit={handleUpdate} className="space-y-2">
+          <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} className="w-full p-2 border rounded" />
+          <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} className="w-full h-40 p-2 border rounded" />
+          <div className="space-x-2">
+            <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded">
+              저장
+            </button>
+            <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 bg-gray-300 rounded">
+              취소
+            </button>
+          </div>
+        </form>
       ) : (
         <>
-          <h2>{board.title}</h2>
-          <p>작성자: 익명</p>
-          <p>작성일: {new Date(board.createDate).toLocaleDateString()}</p>
+          <h2 className="text-xl font-semibold">{board.title}</h2>
+          <p className="text-gray-500">익명 | {new Date(board.createDate).toLocaleDateString()}</p>
           <p>{board.content}</p>
 
           {files.length > 0 && (
-            <div style={{ marginTop: "20px" }}>
-              <h4>📎 첨부파일</h4>
-              <ul>
-                {files.map((file) => (
-                  <li key={file.id}>
-                    <a href={downloadFileUrl(file.id)} target="_blank" rel="noopener noreferrer" download>
-                      {file.originalFileName}
+            <div>
+              <h4 className="mt-4">📎 첨부파일</h4>
+              <ul className="list-disc ml-5">
+                {files.map((f) => (
+                  <li key={f.id}>
+                    <a href={downloadFileUrl(f.id)} download>
+                      {f.originalFileName}
                     </a>
                   </li>
                 ))}
@@ -122,21 +96,12 @@ function AnonymousBoardDetail() {
             </div>
           )}
 
-          {isMyPost && (
-            <div style={{ marginTop: "20px" }}>
-              <button onClick={() => setIsEditing(true)} style={{ padding: "8px 16px", marginRight: "10px" }}>
+          {isMine && (
+            <div className="space-x-2 mt-4">
+              <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-blue-500 text-white rounded">
                 수정
               </button>
-              <button
-                onClick={handleDelete}
-                style={{
-                  padding: "8px 16px",
-                  background: "#f44336",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "4px",
-                }}
-              >
+              <button onClick={handleDelete} className="px-4 py-2 bg-red-500 text-white rounded">
                 삭제
               </button>
             </div>

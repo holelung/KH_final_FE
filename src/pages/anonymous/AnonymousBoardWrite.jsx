@@ -1,85 +1,51 @@
 import { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { getUserId } from "../../utils/userUtils";
 import { uploadFiles } from "../../api/anonymousFileApi";
+import axios from "axios";
 
 function AnonymousBoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!title.trim() || !content.trim()) {
-      alert("제목과 내용을 모두 입력해주세요.");
+      alert("제목과 내용을 입력해주세요.");
       return;
     }
 
-    const newBoard = {
-      userId: getUserId(),
-      title,
-      content,
-    };
-
-    axios
-      .post("http://localhost:8080/api/board", newBoard)
-      .then((res) => {
-        const boardId = res.data.id;
-        alert("익명 게시글이 등록되었습니다.");
-
-        if (files.length > 0) {
-          uploadFiles(files, boardId)
-            .then(() => {
-              alert("첨부파일 업로드 완료");
-              resetForm();
-            })
-            .catch((err) => {
-              console.error("파일 업로드 실패:", err);
-              alert("파일 업로드 중 오류 발생");
-            });
-        } else {
-          resetForm();
-        }
-      })
-      .catch((err) => {
-        console.error("작성 실패:", err);
-        alert("게시글 등록 중 오류가 발생했습니다.");
+    try {
+      const res = await axios.post("http://localhost:8080/api/board", {
+        userId: getUserId(),
+        title,
+        content,
       });
-  };
 
-  const resetForm = () => {
-    setTitle("");
-    setContent("");
-    setFiles([]);
+      const boardId = res.data.id;
+      if (files.length > 0) {
+        await uploadFiles(files, boardId);
+      }
+
+      alert("게시글이 등록되었습니다.");
+      navigate("/anonymous");
+    } catch (err) {
+      console.error(err);
+      alert("작성 중 오류가 발생했습니다.");
+    }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>익명 게시글 작성</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <input type="text" placeholder="제목" value={title} onChange={(e) => setTitle(e.target.value)} style={{ width: "400px", padding: "8px" }} />
-        </div>
-
-        <div style={{ marginTop: "10px" }}>
-          <textarea
-            placeholder="내용"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            style={{ width: "400px", height: "150px", padding: "8px" }}
-          />
-        </div>
-
-        <div style={{ marginTop: "10px" }}>
-          <input type="file" multiple onChange={(e) => setFiles(e.target.files)} />
-        </div>
-
-        <button type="submit" style={{ marginTop: "10px", padding: "8px 16px" }}>
-          등록
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="p-4 space-y-4">
+      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="제목" className="w-full p-2 border rounded" />
+      <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="내용" className="w-full h-40 p-2 border rounded" />
+      <input type="file" multiple onChange={(e) => setFiles(e.target.files)} />
+      <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+        등록
+      </button>
+    </form>
   );
 }
 
