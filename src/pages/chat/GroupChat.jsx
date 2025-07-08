@@ -18,6 +18,8 @@ const GroupChat = () => {
   const userInfo = JSON.parse(sessionStorage.getItem("loginInfo"));
   const token = JSON.parse(sessionStorage.getItem("tokens"))?.accessToken;
 
+  const SOCKET_URL = window.ENV?.SOCKET_URL;
+
   if (!userInfo || !token) {
     return <div>로그인이 필요합니다.</div>;
   }
@@ -37,7 +39,7 @@ const GroupChat = () => {
         toast.error("이전 메시지 로딩 실패");
       });
 
-    const socket = new WebSocket(`ws://localhost:8080/ws/chat/room/${teamId}?token=${token}`);
+    const socket = new WebSocket(`${SOCKET_URL}/chat/room/${teamId}?token=${token}`);
     socketRef.current = socket;
 
     socket.onopen = () => {};
