@@ -15,12 +15,13 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: false,
   });
 
+  // STOMP URL
+  const STOMP_URL = window.ENV?.STOMP_URL;
+
   // STOMP client
   const clientRef = useRef(null);
 
-  const savedStatus = sessionStorage.getItem("connectedUsers")
-    ? JSON.parse(sessionStorage.getItem("connectedUsers")).find((u) => u.username == sessionStorage.getItem("loginInfo") ? JSON.parse(sessionStorage.getItem("loginInfo")).username : "OFFLINE").status
-    : "OFFLINE";
+  const savedStatus = sessionStorage.getItem("connectedUsers") ? JSON.parse(sessionStorage.getItem("connectedUsers")).find((u) => u.username == sessionStorage.getItem("loginInfo") ? JSON.parse(sessionStorage.getItem("loginInfo")).username : "OFFLINE").status : "OFFLINE";
   const statusRef = useRef(savedStatus || "ONLINE");
   const [connectedUsers, setConnectedUsers] = useState([]);
 
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }) => {
         status: statusRef.current,
       };
       const client = new Client({
-        webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+        webSocketFactory: () => new SockJS(STOMP_URL),
         connectHeaders: { Authorization: `Bearer ${token}` },
         reconnectDelay: 5000,
         debug: () => {},
