@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiService } from "../../api/apiService";
 import axios from "axios";
@@ -24,6 +24,8 @@ const Registration = () => {
     email: "",
     verifyCode: "", 
   })
+  const [startSsn, setStartSsn] = useState("");
+  const [endSsn, setEndSsn] = useState("");
   const [isMailSend, setIsMailSend] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +39,20 @@ const Registration = () => {
     }
     return () => clearTimeout(timerRef.current);
   }, [timer]);
+
+  useEffect(()=> {
+    setRegisterInfo(prev => ({
+      ...prev,
+      ssn:`${startSsn}-${endSsn}`,
+    }))
+
+    checkEmptyRegisterInfo();
+  }, [startSsn, endSsn]);
+
+  useEffect(()=> {
+    checkEmptyRegisterInfo();
+  },[registerInfo]);
+
 
   // 주소 검색 클릭
   const handleAddressSearchClick = () => {
@@ -62,8 +78,6 @@ const Registration = () => {
       ...prev,
       address1: fullAddress,
     }));
-    checkEmptyRegisterInfo();
-    console.log(fullAddress); 
   }
 
   // 이메일 인증 코드 전송 로직
@@ -83,13 +97,17 @@ const Registration = () => {
       })
       .catch(error => {
         setIsLoading(false);
-        console.log("이메일 인증 코드 전송 중 오류 발생:", error);
+        
         const {message, code} = error.response?.data;
         if (code === "E101") {
           toast.error("이미 가입된 이메일입니다.");
+        }else{
+          toast.error("이메일 전송에 실패했습니다.");
         }
       });
   }
+
+
   const handleVerifyCode = () => {
     // 인증코드 확인 로직
     apiService.post('/emails/verify', emailVerify, { auth: false })
@@ -117,13 +135,11 @@ const Registration = () => {
       ...prev,
       [type]: value,
     }));
-    checkEmptyRegisterInfo();
   }
 
   // 회원가입 정보가 비어있는지 확인하는 함수
   const checkEmptyRegisterInfo = () => {
-    console.log("공백 체크");
-    console.log(registerInfo)
+
     for (const [key, value] of Object.entries(registerInfo)) {
       if( key === "email" ) break;
       if (value === null || value.trim() === "" || value === undefined) {
@@ -134,7 +150,8 @@ const Registration = () => {
     setIsFormFilled(true);
   }
 
-  const handleRegister = () => {
+  const handleRegister = (e) => {
+    e.preventDefault();  
     // 회원가입 처리 로직
     if(!isFormFilled) {
       toast.error(`빈칸 없이 입력해주세요.`);
@@ -170,41 +187,27 @@ const Registration = () => {
     return `${m}:${s}`;
   };
 
-  // 주민번호 마스킹 함수
-  const maskSSN = (value) => {
-    if (value.length < 7) return value;
-    return value.slice(0, 8) + value.slice(8).replace(/\d/g, '*');
-  };
-
-
-  const handleSSNChange = (e) => {
-    let input = e;
-    let raw = registerInfo.ssn;
-
-    if( raw.length == 6 ) {
-      raw += "-"; 
-    }
-
-    raw += input.slice(-1);
-    setRegisterInfo(prev => ({
-      ...prev,
-      ssn: raw,
-    }));
-    checkEmptyRegisterInfo();
-  }
-
   const handlePhoneChange = (e) => {
-    let input = e;
+    let input = formatPhoneNumber(e);
 
-    if (input.length === 3 || input.length === 8) { 
-      input += "-"; 
-    }
     setRegisterInfo(prev => ({
       ...prev,
       phone: input,
     }));
-    checkEmptyRegisterInfo();
+    
   }
+
+  const formatPhoneNumber = (value) => {
+    // 숫자만 남기고 자릿수 최대 11자리까지
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+    // 3-4-4 형태로 분리
+    const parts = digits.match(/^(\d{0,3})(\d{0,4})(\d{0,4})$/);
+    if (!parts) return digits;
+    // 빈 문자열 필터링 후 하이픈으로 조인
+    return [parts[1], parts[2], parts[3]]
+      .filter((part) => part)
+      .join('-');
+  };
 
   return (
     <>
@@ -218,6 +221,7 @@ const Registration = () => {
       </section>
 
       {/* 회원가입 정보입력 섹션 */}
+      <form onSubmit={handleRegister}>
       <section className="size-full mt-12 font-PyeojinGothicB flex flex-col gap-6">
         {/* 아이디 */}
         <div className="px-24">
@@ -269,16 +273,26 @@ const Registration = () => {
         </div>
         
         {/* 주민번호 */}
-        <div className="px-24">
+        <div className="px-24 flex items-center gap-1">
         <input 
-            id="ssn" 
+            id="ssnStart" 
             type="text" 
-            placeholder="주민번호" 
+            placeholder="주민번호 앞자리" 
             className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg" 
-            onChange={e => handleSSNChange(e.target.value)}
-            value={maskSSN(registerInfo.ssn)}
-            maxLength={14}
+            onChange={e => setStartSsn(e.target.value.replace(/\D/g, ''))}
+            value={startSsn}
+            maxLength={6}
           />
+        <p className="text-2xl">-</p>
+        <input
+          id="ssnEnd" 
+          type="password"
+          placeholder="주민번호 뒷자리"
+          className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg" 
+          onChange={e=> setEndSsn(e.target.value.replace(/\D/g, ''))}
+          value={endSsn}
+          maxLength={7}
+        />
         </div>
 
         {/* 주소 입력 */}
@@ -371,11 +385,11 @@ const Registration = () => {
 
       </section>
       <section className="mt-12">
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center items-center">
           <button 
             type="submit" 
             className="w-48 h-20 text-3xl text-white bg-saintragreen rounded-xl disabled:bg-saintragray cursor-pointer"
-            onClick={() => handleRegister()}
+            onClick={(e) => handleRegister(e)}
             disabled={!isEmailVerified}
           >
             가입하기
@@ -387,8 +401,9 @@ const Registration = () => {
           )}
         </div>
       </section>
+      </form>
       <section className="my-12 text-lg text-gray-500 cursor-pointer hover:text-gray-600 active:scale-95 select-none">
-        <div onClick={() => navi("/authenticator")}>Go Back to Authenticator</div>
+        <div type="button" onClick={() => navi("/authenticator")}>Go Back to Authenticator</div>
       </section>
     </>
   );
