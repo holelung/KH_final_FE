@@ -5,6 +5,15 @@ import { apiService } from '../../api/apiService';
 import { toast } from 'react-toastify';
 import MeetingRoomForm from './MeetingRoomForm';
 
+const getMonthRange = () => {
+  const today = new Date();
+  const startDate = new Date(today.getFullYear(), today.getMonth(), 1)
+    .toISOString().split('T')[0];
+  const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+    .toISOString().split('T')[0];
+  return [startDate, endDate];
+};
+
 const MeetingRoomCalendar = () => {
   const [rooms, setRooms] = useState([]);
   const [events, setEvents] = useState([]);
@@ -15,20 +24,10 @@ const MeetingRoomCalendar = () => {
   const userInfo = JSON.parse(sessionStorage.getItem('loginInfo'));
   const userId = userInfo?.id;
 
-  useEffect(() => {
-    const today = new Date();
-    const startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-    const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
-    fetchRooms();
-    fetchReservations(startDate, endDate);
-  }, []);
-
   const fetchRooms = () => {
-    apiService
-      .get('/meetingrooms/list')
-      .then((res) => {
-        const data = res.data.data;
-        const roomList = data.map((room) => ({
+    apiService.get('/meetingrooms/list')
+      .then(res => {
+        const roomList = (res.data.data || []).map(room => ({
           id: room.roomId,
           title: room.roomName,
         }));
@@ -38,12 +37,11 @@ const MeetingRoomCalendar = () => {
   };
 
   const fetchReservations = (startDate, endDate) => {
-    apiService
-      .get('/meetingrooms', { params: { startDate, endDate } })
-      .then((res) => {
-        const reservationEvents = res.data.data
-          .filter((item) => item.isActive === 'Y')
-          .map((item) => ({
+    apiService.get('/meetingrooms', { params: { startDate, endDate } })
+      .then(res => {
+        const reservationEvents = (res.data.data || [])
+          .filter(item => item.isActive === 'Y')
+          .map(item => ({
             id: item.reservationId,
             title: item.purpose,
             resourceId: item.roomId,
@@ -51,24 +49,33 @@ const MeetingRoomCalendar = () => {
             end: item.endTime,
             textColor: '#000000',
             backgroundColor: '#93c5fd',
-            extendedProps: {
-              ...item,
-              type: 'reservation',
-            },
+            extendedProps: { ...item, type: 'reservation' },
           }));
         setEvents(reservationEvents);
       })
       .catch(() => toast.error('회의실 예약 조회 실패'));
   };
 
-  // 등록 버튼
+  const refresh = () => {
+    const [startDate, endDate] = getMonthRange();
+    fetchReservations(startDate, endDate);
+    setShowForm(false);
+    setEditReservation(null);
+    setSelectedReservation(null);
+  };
+
+  useEffect(() => {
+    fetchRooms();
+    const [startDate, endDate] = getMonthRange();
+    fetchReservations(startDate, endDate);
+  }, []);
+
   const handleCreate = () => {
     setEditReservation(null);
     setShowForm(true);
     setSelectedReservation(null);
   };
 
-  // 수정 버튼 (상세에서)
   const handleUpdate = () => {
     setShowForm(false);
     setTimeout(() => {
@@ -78,33 +85,25 @@ const MeetingRoomCalendar = () => {
     }, 0);
   };
 
-  // 삭제
   const handleDelete = () => {
     if (!selectedReservation?.reservationId) return;
     if (window.confirm('정말 삭제하시겠습니까?')) {
-      apiService
-        .patch(`/meetingrooms/${selectedReservation.reservationId}`)
+      apiService.patch(`/meetingrooms/${selectedReservation.reservationId}`)
         .then(() => {
           toast.success('예약이 삭제되었습니다');
-          handleSuccess();
+          refresh();
         })
         .catch(() => toast.error('예약 삭제 실패'));
     }
   };
 
-  // 폼 닫기
   const handleCloseForm = () => {
     setShowForm(false);
     setEditReservation(null);
   };
 
-  // 새로고침
-  const handleSuccess = () => {
-    const today = new Date();
-    const startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-    const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
-    fetchReservations(startDate, endDate);
-    handleCloseForm();
+  const handleCloseDetail = () => {
+    setSelectedReservation(null);
   };
 
   return (
@@ -130,7 +129,7 @@ const MeetingRoomCalendar = () => {
         slotDuration="01:00:00"
         height="auto"
         eventColor="#60a5fa"
-        eventClick={(info) => {
+        eventClick={info => {
           if (info.event.extendedProps.type === 'reservation') {
             setSelectedReservation(info.event.extendedProps);
           }
@@ -141,7 +140,7 @@ const MeetingRoomCalendar = () => {
       {showForm && (
         <MeetingRoomForm
           onClose={handleCloseForm}
-          onSuccess={handleSuccess}
+          onSuccess={refresh}
           roomList={rooms}
           editReservation={editReservation}
         />
@@ -151,22 +150,22 @@ const MeetingRoomCalendar = () => {
       {selectedReservation && (
         <div
           className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50"
-          onClick={() => setSelectedReservation(null)}
+          onClick={handleCloseDetail}
         >
           <div
             className="bg-white rounded-lg shadow-md p-6 w-full max-w-md"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center border-b-8 pb-2 mb-4" style={{ borderColor: '#60a5fa' }}>
+            <div
+              className="flex justify-between items-center border-b-8 pb-2 mb-4"
+              style={{ borderColor: '#60a5fa' }}
+            >
               <p className="text-base font-medium">{selectedReservation.roomName}</p>
               <button
                 className="text-gray-500 hover:text-red-500 text-xl"
-                onClick={() => setSelectedReservation(null)}
-              >
-                ×
-              </button>
+                onClick={handleCloseDetail}
+              >×</button>
             </div>
-
             <div className="space-y-3 text-sm text-gray-700">
               <div>
                 <p className="text-gray-500">위치</p>
@@ -190,7 +189,7 @@ const MeetingRoomCalendar = () => {
                 </p>
               </div>
             </div>
-            {/* 본인만 수정/삭제 가능 */}
+            {/* 본인만 수정/삭제 */}
             {String(userId) === String(selectedReservation.createdBy) && (
               <div className="flex gap-2 justify-end mt-6">
                 <button

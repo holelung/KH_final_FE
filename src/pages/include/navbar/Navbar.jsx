@@ -12,6 +12,7 @@ import {
   UserCircleIcon,
   UserPlusIcon,
   UsersIcon,
+  DocumentMagnifyingGlassIcon
 } from "@heroicons/react/24/solid";
 
 const Navbar = () => {
