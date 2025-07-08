@@ -1,22 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { apiService } from "../../api/apiService";
 import { toast } from "react-toastify";
 import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 
 const GroupChat = () => {
-  const socketRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
-  const { teamId } = useParams();
-  const location = useLocation();
-  const teamName = location.state?.teamName || "";
-
+  const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
   const isFirstRender = useRef(true);
 
+  const { teamId } = useParams();
+  const location = useLocation();
+  const teamName = location.state?.teamName || "";
   const userInfo = JSON.parse(sessionStorage.getItem("loginInfo"));
   const token = JSON.parse(sessionStorage.getItem("tokens"))?.accessToken;
+  const userNo = parseInt(userInfo?.id);
 
   const SOCKET_URL = window.ENV?.SOCKET_URL;
 
@@ -24,43 +24,35 @@ const GroupChat = () => {
     return <div>로그인이 필요합니다.</div>;
   }
 
-  const userNo = parseInt(userInfo.id);
-
   useEffect(() => {
     apiService.get("/chat", { params: { teamId } })
       .then((res) => {
-        if (res.data.code === "S200") {
-          setMessages(res.data.data);
-        } else {
-          toast.error(res.data.message || "이전 메시지를 불러올 수 없습니다.");
-        }
+        if (res.data.code === "S200") setMessages(res.data.data);
+        else toast.error(res.data.message || "이전 메시지를 불러올 수 없습니다.");
       })
-      .catch(() => {
-        toast.error("이전 메시지 로딩 실패");
-      });
+      .catch(() => toast.error("이전 메시지 로딩 실패"));
 
     const socket = new WebSocket(`${SOCKET_URL}/chat/room/${teamId}?token=${token}`);
     socketRef.current = socket;
 
-    socket.onopen = () => {};
     socket.onmessage = (event) => {
-      const received = JSON.parse(event.data);
-      setMessages((prev) => [...prev, received]);
+      try {
+        const received = JSON.parse(event.data);
+        setMessages((prev) => [...prev, received]);
+      } catch (e) {
+        console.error("메시지 파싱 오류:", e);
+      }
     };
-    socket.onerror = () => {};
-    socket.onclose = () => {};
 
     return () => socket.close();
   }, [teamId, token]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      if (isFirstRender.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "auto" });
-        isFirstRender.current = false;
-      } else {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
+      messagesEndRef.current.scrollIntoView({
+        behavior: isFirstRender.current ? "auto" : "smooth",
+      });
+      isFirstRender.current = false;
     }
   }, [messages]);
 
@@ -73,13 +65,62 @@ const GroupChat = () => {
       content: inputText.trim(),
       type: "send",
     };
-
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(newMessage));
       setInputText("");
     } else {
       toast.error("WebSocket이 열려있지 않습니다.");
     }
+  };
+
+  const renderMessage = (msg, idx) => {
+    const isMine = String(msg.senderId) === String(userNo);
+    return (
+      <div
+        key={idx}
+        className={`flex ${isMine ? "justify-end" : "justify-start"} relative`}
+      >
+        <div
+          className={`max-w-[75%] px-7 py-4 rounded-2xl shadow
+            ${isMine
+              ? "bg-blue-200 text-right text-gray-800 rounded-br-none"
+              : "bg-white text-left text-gray-800 rounded-bl-none"}
+            relative`}
+          style={{
+            marginRight: isMine ? 8 : 0,
+            marginLeft: isMine ? 0 : 8,
+          }}
+        >
+          <span
+            style={{
+              position: "absolute",
+              top: 28,
+              right: isMine ? -12 : undefined,
+              left: isMine ? undefined : -12,
+              width: 0,
+              height: 0,
+              borderTop: "12px solid transparent",
+              borderBottom: "12px solid transparent",
+              borderLeft: isMine ? undefined : "12px solid #fff",
+              borderRight: isMine ? "12px solid #bfdbfe" : undefined,
+            }}
+          />
+          <div className="text-sm text-gray-500 font-semibold mb-1">
+            {msg.senderName || msg.senderId}
+          </div>
+          <div className="break-words font-bold">{msg.content}</div>
+          <div className={`flex items-center gap-2 mt-1 ${isMine ? "justify-end" : "justify-start"}`}>
+            <span className="text-xs text-gray-400">
+              {msg.sentDate &&
+                new Date(msg.sentDate).toLocaleTimeString("ko-KR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -98,57 +139,8 @@ const GroupChat = () => {
           </div>
         ) : (
           <>
-            {messages.map((msg, idx) => {
-              console.log(msg); 
-              const isMine = String(msg.senderId) === String(userNo);
-              return (
-                <div
-                  key={idx}
-                  className={`flex ${isMine ? "justify-end" : "justify-start"} relative`}
-                >
-                  <div
-                    className={`max-w-[75%] px-7 py-4 rounded-2xl shadow
-                      ${isMine
-                        ? "bg-blue-200 text-right text-gray-800 rounded-br-none"
-                        : "bg-white text-left text-gray-800 rounded-bl-none"}
-                      relative`}
-                    style={{
-                      marginRight: isMine ? "8px" : 0,
-                      marginLeft: isMine ? 0 : "8px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: 28,
-                        right: isMine ? -12 : undefined,
-                        left: isMine ? undefined : -12,
-                        width: 0,
-                        height: 0,
-                        borderTop: "12px solid transparent",
-                        borderBottom: "12px solid transparent",
-                        borderLeft: isMine ? undefined : "12px solid #fff",
-                        borderRight: isMine ? "12px solid #bfdbfe" : undefined,
-                      }}
-                    />
-                    <div className="text-sm text-gray-500 font-semibold mb-1">
-                      {msg.senderName || msg.senderId}
-                    </div>
-                    <div className="break-words font-bold">{msg.content}</div>
-                      <div className={`flex items-center gap-2 mt-1 ${isMine ? "justify-end" : "justify-start"}`}>
-                      <span className="text-xs text-gray-400">
-                        {msg.sentDate &&
-                          new Date(msg.sentDate).toLocaleTimeString("ko-KR", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-            <div ref={messagesEndRef}></div>
+            {messages.map(renderMessage)}
+            <div ref={messagesEndRef} />
           </>
         )}
       </div>
@@ -160,8 +152,8 @@ const GroupChat = () => {
           type="text"
           placeholder="메시지를 입력하세요..."
           value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyUp={(e) => e.key === "Enter" && handleSend()}
+          onChange={e => setInputText(e.target.value)}
+          onKeyUp={e => e.key === "Enter" && handleSend()}
         />
         <button
           onClick={handleSend}

@@ -8,21 +8,22 @@ const ChatRoomList = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const navigate = useNavigate();
 
+  const fetchChatRooms = () => {
+    apiService.get("/chat/rooms")
+      .then(res => {
+        if (res.data.code === "S200") {
+          setChatRooms(res.data.data);
+        } else {
+          toast.error(res.data.message || "채팅방 목록을 불러올 수 없습니다.");
+        }
+      })
+      .catch(err => {
+        console.error("❌ 채팅방 목록 조회 실패:", err);
+        toast.error("채팅방 목록 조회 중 오류가 발생했습니다.");
+      });
+  };
+
   useEffect(() => {
-    const fetchChatRooms = () => {
-      apiService.get("/chat/rooms")
-        .then(res => {
-          if (res.data.code === "S200") {
-            setChatRooms(res.data.data);
-          } else {
-            toast.error(res.data.message || "채팅방 목록을 불러올 수 없습니다.");
-          }
-        })
-        .catch(err => {
-          console.error("❌ 채팅방 목록 조회 실패:", err);
-          toast.error("채팅방 목록 조회 중 오류가 발생했습니다.");
-        });
-    };
     fetchChatRooms();
   }, []);
 
@@ -30,11 +31,16 @@ const ChatRoomList = () => {
     navigate(`/chat/${teamId}`, { state: { teamName } });
   };
 
+  const handleKeyDown = (e, teamId, teamName) => {
+    if (e.key === "Enter" || e.key === " ") {
+      handleEnterRoom(teamId, teamName);
+    }
+  };
+
   return (
     <div className="p-10 max-w-xl mx-auto flex flex-col items-center relative text-lg">
-      {/* 흐릿한 배경 아이콘 */}
-      <HiOutlineChatBubbleLeftRight 
-        className=" absolute text-blue-100 text-[120px] opacity-20 left-1/2 -translate-x-1/2 top-16 pointer-events-none text-xl" 
+      <HiOutlineChatBubbleLeftRight
+        className="absolute text-blue-100 text-[120px] opacity-20 left-1/2 -translate-x-1/2 top-16 pointer-events-none"
         aria-hidden
       />
 
@@ -43,26 +49,26 @@ const ChatRoomList = () => {
           <HiOutlineChatBubbleLeftRight className="text-blue-400 text-3xl" />
           채팅방 목록
         </h2>
-        <div className="text-xl text-gray-500  text-center mb-8">
+        <div className="text-xl text-gray-500 text-center mb-8">
           채팅방을 선택해 바로 대화를 시작하세요.
         </div>
+
         {chatRooms.length === 0 ? (
           <p className="text-gray-400 text-center mt-10">채팅방이 없습니다.</p>
         ) : (
           <ul className="flex flex-col gap-6">
-            {chatRooms.map((room) => (
+            {chatRooms.map(room => (
               <li
                 key={room.id}
                 onClick={() => handleEnterRoom(room.id, room.teamName)}
+                onKeyDown={e => handleKeyDown(e, room.id, room.teamName)}
+                tabIndex={0}
                 className="
                   bg-white hover:bg-blue-50 transition
                   border border-gray-200 shadow
                   rounded-xl px-6 py-5
-                  flex items-center gap-4 cursor-pointer
-                  group
+                  flex items-center gap-4 cursor-pointer group
                 "
-                tabIndex={0}
-                onKeyDown={e => (e.key === "Enter" || e.key === " ") && handleEnterRoom(room.id, room.teamName)}
               >
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-100 text-blue-500 text-2xl group-hover:bg-blue-200">
                   <HiOutlineChatBubbleLeftRight />
