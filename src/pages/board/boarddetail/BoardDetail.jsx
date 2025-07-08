@@ -116,7 +116,7 @@ const BoardDetail = () => {
         <section className="w-full flex flex-col gap-2">
           <div className="w-full text-2xl flex justify-between items-center">
             <div>{title ? title : "글 제목"}</div>
-            {userId == auth.loginInfo.id ? (
+            {/* {userId == auth.loginInfo.id ? (
               <div className="flex gap-1">
                 <button type="button" className="h-full px-2 text-lg text-white bg-yellow-300 rounded-sm">
                   수정
@@ -127,7 +127,7 @@ const BoardDetail = () => {
               </div>
             ) : (
               <></>
-            )}
+            )} */}
           </div>
           <div className="w-full flex justify-end gap-2">
             {type === "anonymous" ? (
@@ -164,7 +164,7 @@ const BoardDetail = () => {
                 <div key={comment.id} className="w-full border-t-2 border-saintragray flex-col gap-2">
                   <div className="px-2 py-1 text-lg border-b-1 border-saintragray flex justify-between">
                     <div>익명의 댓글</div>
-                    {auth.loginInfo.id == comment.userId ? (
+                    {/* {auth.loginInfo.id == comment.userId ? (
                       <div className="flex gap-1">
                         <button type="button" className="h-full px-2 text-white bg-yellow-300 rounded-sm">
                           수정
@@ -175,7 +175,7 @@ const BoardDetail = () => {
                       </div>
                     ) : (
                       <></>
-                    )}
+                    )} */}
                   </div>
                   <div className="px-3 py-1 flex justify-between">
                     <div>{comment.content}</div>
@@ -188,7 +188,7 @@ const BoardDetail = () => {
                     <div>
                       {comment.realname}({comment.username})
                     </div>
-                    {auth.loginInfo.id == comment.userId ? (
+                    {/* {auth.loginInfo.id == comment.userId ? (
                       <div className="flex gap-1">
                         <button type="button" className="h-full px-2 text-white bg-yellow-300 rounded-sm">
                           수정
@@ -199,7 +199,7 @@ const BoardDetail = () => {
                       </div>
                     ) : (
                       <></>
-                    )}
+                    )} */}
                   </div>
                   <div className="px-3 py-1 flex justify-between">
                     <div>{comment.content}</div>
