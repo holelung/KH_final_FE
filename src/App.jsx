@@ -52,7 +52,7 @@ function App() {
             </AuthRoute>
           }
         >
-          <Route path="/" element={<></>} />
+          <Route path="/" element={<><div> 안녕하세요 </div></>} />
           <Route path="/test" element={<Test />} />
           <Route path="/boards" element={<BoardList />}  />
           <Route path="/calendar" element={<UnifiedCalendar />} />
