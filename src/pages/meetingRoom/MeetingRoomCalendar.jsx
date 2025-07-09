@@ -133,7 +133,12 @@ const MeetingRoomCalendar = () => {
           if (info.event.extendedProps.type === 'reservation') {
             setSelectedReservation(info.event.extendedProps);
           }
+
+              <div style={{ background: "#D2F8D2", padding: "20px", fontSize: "24px" }}>
+                🟢 <b>자동화 배포 성공 테스트!</b>
+              </div>
         }}
+        
       />
 
       {/* 등록/수정 폼 */}
