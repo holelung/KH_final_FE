@@ -1,15 +1,15 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../../Context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AuthRoute = ({ children }) => {
-  const { auth } = useContext(AuthContext);
+  const loginInfoString = sessionStorage.getItem("loginInfo");
 
-  if (!auth.isAuthenticated) {
-    toast.info("로그인 하세요!");
-    return <Navigate to={"/authenticator"} replace />;
+  if(!loginInfoString) {
+    return <Navigate to="/authenticator" replace />
   }
+
   return children;
 };
 

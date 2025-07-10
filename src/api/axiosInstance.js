@@ -46,9 +46,9 @@ axiosInstance.interceptors.response.use(
     const { success, code, message } = res?.data;
   
     // 배포시 삭제할 코드
-    if (success === false) {
-      console.error(`안내 [${res.status}, ${code}]: ${message}`);
-    }
+    // if (success === false) {
+    //   console.error(`안내 [${res.status}, ${code}]: ${message}`);
+    // }
   
 
     switch (code) {
