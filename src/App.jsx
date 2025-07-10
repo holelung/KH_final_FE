@@ -32,7 +32,6 @@ import ApproveJoin from "./pages/admin/ApproveJoin";
 import Log from "./pages/admin/Log";
 import UserManage from "./pages/admin/UserManage";
 
-
 function App() {
   return (
     <AuthProvider>
@@ -54,15 +53,15 @@ function App() {
         >
           <Route path="/" element={<></>} />
           <Route path="/test" element={<Test />} />
-          <Route path="/boards" element={<BoardList />}  />
+          <Route path="/boards" element={<BoardList />} />
           <Route path="/calendar" element={<UnifiedCalendar />} />
           <Route path="/calendar/write" element={<CalendarForm />} />
           <Route path="/meetingroom" element={<MeetingRoomCalendar />} />
-          <Route path="/meetingroom/write" element={<MeetingRoomForm/>} />
+          <Route path="/meetingroom/write" element={<MeetingRoomForm />} />
           <Route path="/chat" element={<ChatRoomList />} />
           <Route path="/chat/:teamId" element={<GroupChat />} />
-          <Route path="/mypage" element={<MypageDisplay />} >
-            <Route index element={<Mypage/>} />
+          <Route path="/mypage" element={<MypageDisplay />}>
+            <Route index element={<Mypage />} />
             <Route path="modifyProfile" element={<ModifyProfile />} />
             <Route path="updatePassword" element={<UpdatePassword />} />
             <Route path="updateEmail" element={<UpdateEmail />} />
@@ -76,8 +75,8 @@ function App() {
           <Route path="/department" element={<DepartmentList />} />
           <Route path="/department/:id" element={<DepartmentDetail />} />
           <Route path="approve-join" element={<ApproveJoin />} />
-          <Route path="user-manage" element={<UserManage />}/>
-          <Route path="log" element={<Log />}/>
+          <Route path="user-manage" element={<UserManage />} />
+          <Route path="log" element={<Log />} />
         </Route>
       </Routes>
     </AuthProvider>
