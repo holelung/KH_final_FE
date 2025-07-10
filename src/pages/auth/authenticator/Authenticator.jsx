@@ -1,8 +1,7 @@
-import { Outlet  } from "react-router-dom";
-import Saintra_Logo from "/src/assets/Saintra.png";
+import { Outlet } from "react-router-dom";
+import Saintra_Logo from "/src/assets/Saintra_Logo.png";
 
 const Authenticator = () => {
-
   return (
     <>
       <div className="w-full min-h-screen h-full bg-saintralightblue font-PyeojinGothicB flex justify-center items-center">
@@ -10,7 +9,7 @@ const Authenticator = () => {
           <section className="text-6xl mt-12">
             <img src={Saintra_Logo} alt="Saintra" className="w-sm" />
           </section>
-            <Outlet />
+          <Outlet />
         </div>
       </div>
     </>

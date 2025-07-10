@@ -2,10 +2,8 @@ import "./App.css";
 import { AuthProvider } from "./Context/AuthContext";
 import { Routes, Route } from "react-router-dom";
 import Authenticator from "./pages/auth/authenticator/Authenticator";
-import DisplayArea from "./pages/include/displayarea/DisplayArea";
 import Test from "./pages/Home/Test";
 import BoardList from "./pages/board/boardlist/BoardList";
-import Includes from "./pages/include/includes/Includes";
 import AuthRoute from "./pages/auth/authroute/AuthRoute";
 import UnifiedCalendar from "./pages/calendar/UnifiedCalendar";
 import GroupChat from "./pages/chat/GroupChat";
@@ -31,6 +29,7 @@ import DepartmentDetail from "./pages/department/departmentdetail/DepartmentDeta
 import ApproveJoin from "./pages/admin/ApproveJoin";
 import Log from "./pages/admin/Log";
 import UserManage from "./pages/admin/UserManage";
+import Grid from "./Components/layout/grid/Grid";
 
 function App() {
   return (
@@ -47,11 +46,11 @@ function App() {
         <Route
           element={
             <AuthRoute>
-              <Includes />
+              <Grid />
             </AuthRoute>
           }
         >
-          <Route path="/" element={<><div> 안녕하세요 </div></>} />
+          <Route path="/" element={<></>} />
           <Route path="/test" element={<Test />} />
           <Route path="/boards" element={<BoardList />} />
           <Route path="/calendar" element={<UnifiedCalendar />} />
