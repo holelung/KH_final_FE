@@ -33,6 +33,7 @@
     "react-toastify": "^11.0.5",
     "react-use-websocket": "^4.13.0",
     "sockjs-client": "^1.6.1",
+    "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
