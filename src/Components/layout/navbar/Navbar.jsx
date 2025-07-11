@@ -54,9 +54,10 @@ const Navbar = (props) => {
 
   const navi = useNavigate();
 
+  // 네비게이션 바 변환 버튼 초기화
   useEffect(() => {
     setIsVisible(false);
-  }, [props.isShrink]);
+  }, [props.isCollapsed]);
 
   // 상태 표시 처리
   const handleUserStatus = (props) => {
@@ -77,27 +78,29 @@ const Navbar = (props) => {
     }
   };
 
-  // 크기 전환 버튼 표시 여부 처리 1
+  // 네비게이션 바 변환 버튼 표시 여부 처리
   const handleHiddenButton = () => {
     setIsVisible(!isVisible);
   };
 
   return (
     // 그리드 컨테이너
-    <aside className="relative row-span-2 grid grid-rows-[6rem_1fr_6rem] z-20 shadow-md shadow-slate-300 bg-white font-PyeojinGothicB text-slate-600 select-none">
+    <aside className="relative row-span-2 grid grid-rows-[6rem_1fr_6rem] z-20 bg-white font-PyeojinGothicB text-slate-600 select-none">
       {/* 그리드 아이템 1: 홈 아이콘 구역 */}
-      <section className="flex justify-center items-center shadow-md shadow-slate-300">
+      <section className="flex justify-center items-center border-b-2 border-r-2 border-slate-300">
         <button
           type="button"
           onClick={() => navi("/")}
-          className={`flex justify-center items-center gap-1 w-full h-full ${props.isShrink ? "" : "p-1"} text-4xl text-slate-600 cursor-pointer`}
+          className={`flex justify-center items-center gap-1 w-full h-full ${props.isCollapsed ? "" : "p-1"} text-4xl text-slate-600 cursor-pointer`}
         >
           <img id="icon" src={Saintra_Logo} alt="Saintra" className="h-12" />
-          {props.isShrink ? <></> : <div>Saintra</div>}
+          {props.isCollapsed ? <></> : <div>Saintra</div>}
         </button>
       </section>
       {/* 그리드 아이템 2: 버튼 구역 */}
-      <section className={`flex flex-col gap-6 overflow-x-hidden overflow-y-auto scrollbar-hide ${props.isShrink ? "items-center py-6" : "px-4 py-6"} `}>
+      <section
+        className={`flex flex-col gap-6 overflow-x-hidden overflow-y-auto scrollbar-hide ${props.isCollapsed ? "items-center py-6" : "px-4 py-6"} border-r-2 border-slate-300`}
+      >
         {/* 네비게이션 버튼 */}
         {NavElementList.map((nav) => {
           // 권한에 따라 추가되는 버튼
@@ -115,32 +118,30 @@ const Navbar = (props) => {
               key={nav.key}
               type="button"
               onClick={() => navi(nav.path)}
-              className={`flex items-center gap-4 ${props.isShrink ? "size-fit" : "h-fit"} p-1 hover:bg-slate-600 border-b-2 rounded-lg inset-shadow-sm inset-shadow-slate-400 text-xl tracking-wider hover:text-white cursor-pointer`}
+              className={`flex items-center gap-4 ${props.isCollapsed ? "size-fit" : "h-fit"} p-1 hover:bg-slate-600 border-b-2 border-slate-400 hover:border-slate-600 rounded-lg inset-shadow-sm inset-shadow-slate-400 text-xl tracking-wider hover:text-white cursor-pointer`}
             >
               {nav.icon}
-              {props.isShrink ? <></> : <>{nav.text}</>}
+              {props.isCollapsed ? <></> : <>{nav.text}</>}
             </button>
           );
         })}
       </section>
       {/* 그리드 아이템 3: 상태 표시 구역 */}
-      <section className={`flex ${props.isShrink ? "justify-center" : ""} items-center inset-shadow-sm inset-shadow-slate-400`}>
+      <section className={`flex ${props.isCollapsed ? "justify-center" : ""} items-center border-t-2 border-r-2 border-slate-300`}>
         <button
           type="button"
           onClick={() => {
             handleUserStatus();
           }}
-          className={`group flex ${props.isShrink ? "justify-center" : ""} items-center gap-4 text-2xl cursor-pointer`}
+          className={`group flex ${props.isCollapsed ? "justify-center" : ""} items-center gap-4 text-2xl cursor-pointer`}
         >
           <div
-            className={`${props.isShrink ? "size-8" : "size-6 ml-4"} border-b-2 border-slate-600 rounded-full inset-shadow-sm inset-shadow-slate-400 ${userStatus.current === "AWAY" ? "bg-yellow-400" : "bg-green-500"}`}
+            className={`${props.isCollapsed ? "size-8" : "size-6 ml-4"} border-b-2 border-slate-600 rounded-full inset-shadow-sm inset-shadow-slate-400 ${userStatus.current === "AWAY" ? "bg-yellow-400" : "bg-green-500"}`}
           />
-          {props.isShrink ? (
+          {props.isCollapsed ? (
             <></>
           ) : (
-            <div className="px-2 py-1 group-hover:bg-slate-600 border-b-2 rounded-lg inset-shadow-sm inset-shadow-slate-400 group-hover:text-white">
-              {userStatus.current === "AWAY" ? "자리비움" : "접속 중"}
-            </div>
+            <div className="px-2 py-1 group-hover:bg-slate-600 rounded-lg group-hover:text-white">{userStatus.current === "AWAY" ? "자리비움" : "접속 중"}</div>
           )}
         </button>
       </section>
@@ -152,10 +153,10 @@ const Navbar = (props) => {
       >
         <button
           type="button"
-          onClick={props.handleNavbarIsShrink}
-          className={`absolute top-1/2 -translate-y-1/2 w-full h-36 bg-white hover:bg-slate-600 border-b-2 border-slate-300 rounded-md inset-shadow-sm inset-shadow-slate-300 hover:text-white cursor-pointer ${isVisible ? "" : "hidden"}`}
+          onClick={props.handleNavbarCollapsed}
+          className={`absolute top-1/2 -translate-y-1/2 w-full h-36 bg-white hover:bg-slate-600 border-b-2 border-slate-400 hover:border-slate-600 rounded-md inset-shadow-sm inset-shadow-slate-300 hover:text-white cursor-pointer ${isVisible ? "" : "hidden"}`}
         >
-          {props.isShrink ? <ChevronDoubleRightIcon /> : <ChevronDoubleLeftIcon />}
+          {props.isCollapsed ? <ChevronDoubleRightIcon /> : <ChevronDoubleLeftIcon />}
         </button>
       </section>
     </aside>
@@ -163,8 +164,8 @@ const Navbar = (props) => {
 };
 
 Navbar.propTypes = {
-  isShrink: PropTypes.bool.isRequired,
-  handleNavbarIsShrink: PropTypes.func.isRequired,
+  isCollapsed: PropTypes.bool.isRequired,
+  handleNavbarCollapsed: PropTypes.func.isRequired,
 };
 
 export default Navbar;

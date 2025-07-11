@@ -7,7 +7,7 @@ const DisplayArea = () => {
       {/* 스크롤 영역 */}
       <section className="relative flex flex-col items-center gap-8 py-8">
         {/* 컨텐츠 영역 */}
-        <div className="w-7xl min-h-[calc(100vh-15rem)] p-8 mb-32 shadow-md bg-white rounded-xl">
+        <div className="w-7xl min-h-[calc(100vh-13rem)] p-8 mb-[6rem] border-2 border-slate-300 bg-white rounded-xl">
           <Outlet />
         </div>
         {/* 푸터 */}
