@@ -1,17 +1,12 @@
 import "./App.css";
 import { AuthProvider } from "./Context/AuthContext";
 import { Routes, Route } from "react-router-dom";
-import Authenticator from "./pages/auth/authenticator/Authenticator";
 import Test from "./pages/Home/Test";
 import BoardList from "./pages/board/boardlist/BoardList";
 import AuthRoute from "./pages/auth/authroute/AuthRoute";
 import UnifiedCalendar from "./pages/calendar/UnifiedCalendar";
 import GroupChat from "./pages/chat/GroupChat";
-import Login from "./Components/auth/Login";
-import Registration from "./Components/auth/Registration";
-import ReissuePassword from "./Components/auth/ReissuePassword";
 import { ToastContainer } from "react-toastify";
-import PasswordReset from "./Components/auth/PasswordReset";
 import Mypage from "./pages/mypage/Mypage";
 import MypageDisplay from "./pages/mypage/MypageDisplay";
 import ModifyProfile from "./pages/mypage/ModifyProfile";
@@ -30,17 +25,18 @@ import ApproveJoin from "./pages/admin/ApproveJoin";
 import Log from "./pages/admin/Log";
 import UserManage from "./pages/admin/UserManage";
 import Grid from "./Components/layout/grid/Grid";
+import AuthContainer from "./Components/authlayout/authcontainer/AuthContainer";
+import Login from "./Components/authlayout/login/Login";
+import Registration from "./Components/authlayout/registration/Registration";
 
 function App() {
   return (
     <AuthProvider>
       <ToastContainer position="bottom-right" />
       <Routes>
-        <Route path="/authenticator" element={<Authenticator />}>
+        <Route path="/authenticator" element={<AuthContainer />}>
           <Route index element={<Login />} />
           <Route path="registration" element={<Registration />} />
-          <Route path="reissue-password" element={<ReissuePassword />} />
-          <Route path="password-reset" element={<PasswordReset />} />
         </Route>
 
         <Route
