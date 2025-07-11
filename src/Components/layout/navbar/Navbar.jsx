@@ -136,7 +136,7 @@ const Navbar = (props) => {
           className={`group flex ${props.isCollapsed ? "justify-center" : ""} items-center gap-4 text-2xl cursor-pointer`}
         >
           <div
-            className={`${props.isCollapsed ? "size-8" : "size-6 ml-4"} border-b-2 border-slate-600 rounded-full inset-shadow-sm inset-shadow-slate-400 ${userStatus.current === "AWAY" ? "bg-yellow-400" : "bg-green-500"}`}
+            className={`${props.isCollapsed ? "size-8" : "size-8 ml-4"} border-b-2 border-slate-400 rounded-full inset-shadow-sm inset-shadow-slate-400 ${userStatus.current === "AWAY" ? "bg-yellow-400" : "bg-green-500"}`}
           />
           {props.isCollapsed ? (
             <></>
