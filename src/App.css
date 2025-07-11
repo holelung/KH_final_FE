@@ -42,6 +42,20 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "SEBANG_Gothic_Bold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2104@1.0/SEBANG_Gothic_Bold.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "EliceDigitalBaeum-Bd";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_elice@1.0/EliceDigitalBaeum-Bd.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
   --font-PyeojinGothicM: "PyeojinGothic-Regular";
   --font-PyeojinGothicB: "PyeojinGothic-Bold";
@@ -49,6 +63,8 @@
   --font-PretendardM: "Pretendard-Regular";
   --font-PretendardB: "Pretendard-Bold";
   --font-PretendardL: "Pretendard-Light";
+  --font-SebangGothicB: "SEBANG_Gothic_Bold";
+  --font-EliceDigitalBaeumB: "EliceDigitalBaeum-Bd";
   --color-saintrablue: #b1cee3;
   --color-saintralightblue: #eaf0f4;
   --color-saintradarkblue: #b1bee3;

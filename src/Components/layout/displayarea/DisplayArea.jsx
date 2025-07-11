@@ -3,7 +3,7 @@ import Footer from "../footer/Footer";
 
 const DisplayArea = () => {
   return (
-    <main className="overflow-x-hidden overflow-y-auto scrollbar-hide bg-gray-100">
+    <main className="overflow-x-hidden overflow-y-auto scrollbar-hide bg-slate-100">
       {/* 스크롤 영역 */}
       <section className="relative flex flex-col items-center gap-8 py-8">
         {/* 컨텐츠 영역 */}
