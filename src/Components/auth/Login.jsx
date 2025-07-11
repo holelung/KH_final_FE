@@ -22,7 +22,9 @@ const Login = () => {
       console.log(response);
       login(response.data.data.loginInfo, response.data.data.tokens);
     }).catch(error => {
-      if(error.response.data.code === "E401"){
+      console.error(error);
+
+      if(error.response.data?.code === "E401"){
         toast.error(error.response.data.message);
       }
     });
@@ -34,40 +36,41 @@ const Login = () => {
         <div className="text-6xl">Login</div>
         <div className="text-2xl text-gray-500 flex justify-center">Welcome!</div>
       </section>
-      <section className="size-full mt-12 font-PyeojinGothicB flex flex-col gap-6">
-        <div className="px-24">
-          <input 
-            id="username" 
-            type="text" 
-            placeholder="USERNAME" 
-            className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg"
-            onChange={(e) => setLoginInfo(prev => ({
-              ...prev,
-              username: e.target.value,
-            }))}
-          />
-        </div>
-        <div className="px-24">
-          <input 
-            id="password" 
-            type="password" 
-            placeholder="PASSWORD" 
-            className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg" 
-            onChange={(e) => setLoginInfo(prev => ({
-              ...prev,
-              password: e.target.value,
-            }))}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                loginHandler();
-              }
-            }}
-          />
-        </div>
-      </section>
-      <section className="mt-12">
-        <button className="w-48 h-20 text-3xl text-white bg-saintragreen rounded-xl cursor-pointer hover:opacity-90 active:scale-95" onClick={() => loginHandler()}>Login</button>
-      </section>
+
+        <section className="size-full mt-12 font-PyeojinGothicB flex flex-col gap-6">
+          <div className="px-24">
+            <input 
+              id="username" 
+              type="text" 
+              placeholder="USERNAME" 
+              className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg"
+              onChange={(e) => setLoginInfo(prev => ({
+                ...prev,
+                username: e.target.value,
+              }))}
+            />
+          </div>
+          <div className="px-24">
+            <input 
+              id="password" 
+              type="password" 
+              placeholder="PASSWORD" 
+              className="size-full p-4 text-xl border-2 border-gray-400 rounded-lg" 
+              onChange={(e) => setLoginInfo(prev => ({
+                ...prev,
+                password: e.target.value,
+              }))}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  loginHandler();
+                }
+              }}
+            />
+          </div>
+        </section>
+        <section className="mt-12">
+          <button className="w-48 h-20 text-3xl text-white bg-saintragreen rounded-xl cursor-pointer hover:opacity-90 active:scale-95" onClick={() => loginHandler()}>Login</button>
+        </section>
       <section className="my-12 text-lg text-gray-500 flex gap-4">
         <div 
           onClick={() => navi('/authenticator/registration')}
