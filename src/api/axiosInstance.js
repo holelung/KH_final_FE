@@ -38,18 +38,60 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
+function refresh() {
+  const raw = sessionStorage.getItem("tokens");
+  console.log(raw);
+  if(!raw) throw new Error("토큰이 없습니다");
+
+  const tokens = raw ? JSON.parse(raw) : null;
+  const refreshToken = tokens.refreshToken;
+
+  axios.post(`${API_URL}/auth/refresh`, 
+    {},
+    {
+    headers:{
+      Authorization: `Bearer ${refreshToken}`,
+    }
+  }).then(response => {
+    console.log("refresh Token요청 응답", response);
+    const accessToken = response.data.data.accessToken;
+    const refreshToken = response.data.data.refreshToken;
+    const newTokens = {
+      "accessToken":accessToken,
+      "refreshToken":refreshToken,
+    }
+
+    sessionStorage.setItem("tokens", JSON.stringify(newTokens))
+    return newTokens.accessToken;
+  });
+}
+
+
 // 응답 인터셉터: 공통 에러 처리
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
+
     const res = error.response;
+    const status = res?.status;
     const { success, code, message } = res?.data;
-  
-    // 배포시 삭제할 코드
-    // if (success === false) {
-    //   console.error(`안내 [${res.status}, ${code}]: ${message}`);
-    // }
-  
+
+    if (res.status === 401 && res.data.code === 'TOKEN_EXPIRED') {
+      try {
+        const newToken = refresh();
+        console.log(newToken);
+
+        axiosInstance.defaults.headers.Authorization = `Bearer ${newToken}`;
+        error.config.headers.Authorization = `Bearer ${newToken}`;
+        
+        return axiosInstance(error.config);
+      } catch (refreshError) {
+        // 리프레시도 실패하면 로그인 페이지로
+        sessionStorage.removeItem("tokens");
+        sessionStorage.removeItem("loginInfo");
+        return Promise.reject(refreshError);
+      }
+    }
 
     switch (code) {
       case "E100":
