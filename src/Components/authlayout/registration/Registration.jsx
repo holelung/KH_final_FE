@@ -51,8 +51,8 @@ const Registration = () => {
       <div className="flex flex-col items-center gap-10">
         {/* 플렉스 아이템 2-1: 회원가입 텍스트 */}
         <section className="flex flex-col items-center gap-6 font-EliceDigitalBaeumB select-none">
-          <div className="text-5xl text-slate-500">Registration</div>
-          <div className="text-3xl text-slate-400">for Freshman</div>
+          <div className="text-5xl text-slate-500">사원 등록</div>
+          <div className="text-3xl text-slate-400">새로운 직원 등록!</div>
         </section>
         {/* 플렉스 아이템 2-2: 회원가입 값 입력 폼 */}
         <form onSubmit={(e) => handleSubmitRegistration(e)} className="flex flex-col items-center gap-4 font-SebangGothicB text-xl">
@@ -179,14 +179,14 @@ const Registration = () => {
           </section>
           {/* 제출 버튼 */}
           <button type="submit" className="w-40 py-4 mt-4 bg-green-300 hover:bg-green-400 rounded-md text-2xl text-white cursor-pointer select-none">
-            Submit
+            제출
           </button>
         </form>
       </div>
       {/* 플렉스 아이템 3: 네비게이션 구역 */}
       <div className="flex justify-center font-EliceDigitalBaeumB text-lg text-slate-500 select-none">
         <button type="button" onClick={() => navi("/authenticator")} className="cursor-pointer">
-          Go Back to Login
+          로그인으로 돌아가기
         </button>
       </div>
     </>

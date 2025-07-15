@@ -31,7 +31,7 @@ const Header = () => {
       {/* 그리드 아이템 1: 빈 공간 */}
       <section></section>
       {/* 그리드 아이템 2: 헤더 콘텐츠 구역 */}
-      <section className="flex justify-end gap-4 p-1 font-PretendardB text-lg text-slate-600 tracking-wider">
+      <section className="flex justify-end gap-4 p-1 font-PyeojinGothicB text-lg text-slate-600 tracking-wider">
         <button
           type="button"
           onClick={() => navi("/mypage")}

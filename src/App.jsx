@@ -25,22 +25,18 @@ import ApproveJoin from "./pages/admin/ApproveJoin";
 import Log from "./pages/admin/Log";
 import UserManage from "./pages/admin/UserManage";
 import Grid from "./Components/layout/grid/Grid";
-import Authenticator from "./pages/auth/authenticator/Authenticator";
-import Login from "./Components/auth/Login";
-import PasswordReset from "./Components/auth/PasswordReset";
-import Registration from "./Components/auth/Registration";
-import ReissuePassword from "./Components/auth/ReissuePassword";
+import AuthContainer from "./Components/authlayout/authcontainer/AuthContainer";
+import Login from "./Components/authlayout/login/Login";
+import Registration from "./Components/authlayout/registration/Registration";
 
 function App() {
   return (
     <AuthProvider>
       <ToastContainer position="bottom-right" />
       <Routes>
-        <Route path="/authenticator" element={<Authenticator />}>
+        <Route path="/authenticator" element={<AuthContainer />}>
           <Route index element={<Login />} />
           <Route path="registration" element={<Registration />} />
-          <Route path="reissue-password" element={<ReissuePassword />} />
-          <Route path="password-reset" element={<PasswordReset />} />
         </Route>
 
         <Route
