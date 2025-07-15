@@ -1,19 +1,12 @@
 import "./App.css";
 import { AuthProvider } from "./Context/AuthContext";
 import { Routes, Route } from "react-router-dom";
-import Authenticator from "./pages/auth/authenticator/Authenticator";
-import DisplayArea from "./pages/include/displayarea/DisplayArea";
 import Test from "./pages/Home/Test";
 import BoardList from "./pages/board/boardlist/BoardList";
-import Includes from "./pages/include/includes/Includes";
 import AuthRoute from "./pages/auth/authroute/AuthRoute";
 import UnifiedCalendar from "./pages/calendar/UnifiedCalendar";
 import GroupChat from "./pages/chat/GroupChat";
-import Login from "./Components/auth/Login";
-import Registration from "./Components/auth/Registration";
-import ReissuePassword from "./Components/auth/ReissuePassword";
 import { ToastContainer } from "react-toastify";
-import PasswordReset from "./Components/auth/PasswordReset";
 import Mypage from "./pages/mypage/Mypage";
 import MypageDisplay from "./pages/mypage/MypageDisplay";
 import ModifyProfile from "./pages/mypage/ModifyProfile";
@@ -31,7 +24,12 @@ import DepartmentDetail from "./pages/department/departmentdetail/DepartmentDeta
 import ApproveJoin from "./pages/admin/ApproveJoin";
 import Log from "./pages/admin/Log";
 import UserManage from "./pages/admin/UserManage";
-
+import Grid from "./Components/layout/grid/Grid";
+import Authenticator from "./pages/auth/authenticator/Authenticator";
+import Login from "./Components/auth/Login";
+import PasswordReset from "./Components/auth/PasswordReset";
+import Registration from "./Components/auth/Registration";
+import ReissuePassword from "./Components/auth/ReissuePassword";
 
 function App() {
   return (
@@ -48,21 +46,21 @@ function App() {
         <Route
           element={
             <AuthRoute>
-              <Includes />
+              <Grid />
             </AuthRoute>
           }
         >
-          <Route path="/" element={<><div> 안녕하세요 </div></>} />
+          <Route path="/" element={<></>} />
           <Route path="/test" element={<Test />} />
-          <Route path="/boards" element={<BoardList />}  />
+          <Route path="/boards" element={<BoardList />} />
           <Route path="/calendar" element={<UnifiedCalendar />} />
           <Route path="/calendar/write" element={<CalendarForm />} />
           <Route path="/meetingroom" element={<MeetingRoomCalendar />} />
-          <Route path="/meetingroom/write" element={<MeetingRoomForm/>} />
+          <Route path="/meetingroom/write" element={<MeetingRoomForm />} />
           <Route path="/chat" element={<ChatRoomList />} />
           <Route path="/chat/:teamId" element={<GroupChat />} />
-          <Route path="/mypage" element={<MypageDisplay />} >
-            <Route index element={<Mypage/>} />
+          <Route path="/mypage" element={<MypageDisplay />}>
+            <Route index element={<Mypage />} />
             <Route path="modifyProfile" element={<ModifyProfile />} />
             <Route path="updatePassword" element={<UpdatePassword />} />
             <Route path="updateEmail" element={<UpdateEmail />} />
@@ -76,8 +74,8 @@ function App() {
           <Route path="/department" element={<DepartmentList />} />
           <Route path="/department/:id" element={<DepartmentDetail />} />
           <Route path="approve-join" element={<ApproveJoin />} />
-          <Route path="user-manage" element={<UserManage />}/>
-          <Route path="log" element={<Log />}/>
+          <Route path="user-manage" element={<UserManage />} />
+          <Route path="log" element={<Log />} />
         </Route>
       </Routes>
     </AuthProvider>

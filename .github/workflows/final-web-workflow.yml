@@ -55,4 +55,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /home/ubuntu/deploy
-            docker-compose restart web
+            docker compose restart web

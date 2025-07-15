@@ -20,8 +20,10 @@
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
     "html-react-parser": "^5.2.5",
+    "prop-types": "^15.8.1",
     "quill": "^2.0.3",
     "react": "^19.1.0",
+    "react-cookie": "^8.0.1",
     "react-daum-postcode": "^3.2.0",
     "react-dom": "^19.1.0",
     "react-dropzone": "^14.3.8",
@@ -32,10 +34,12 @@
     "react-toastify": "^11.0.5",
     "react-use-websocket": "^4.13.0",
     "sockjs-client": "^1.6.1",
+    "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@svgr/cli": "^8.1.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react-swc": "^3.9.0",
