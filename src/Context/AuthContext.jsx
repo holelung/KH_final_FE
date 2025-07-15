@@ -21,7 +21,11 @@ export const AuthProvider = ({ children }) => {
   // STOMP client
   const clientRef = useRef(null);
 
-  const savedStatus = sessionStorage.getItem("connectedUsers") ? JSON.parse(sessionStorage.getItem("connectedUsers")).find((u) => u.username == sessionStorage.getItem("loginInfo") ? JSON.parse(sessionStorage.getItem("loginInfo")).username : "OFFLINE").status : "OFFLINE";
+  const savedStatus = sessionStorage.getItem("connectedUsers")
+    ? JSON.parse(sessionStorage.getItem("connectedUsers")).find((u) =>
+        u.username == sessionStorage.getItem("loginInfo") ? JSON.parse(sessionStorage.getItem("loginInfo")).username : "OFFLINE"
+      ).status
+    : "OFFLINE";
   const statusRef = useRef(savedStatus || "ONLINE");
   const [connectedUsers, setConnectedUsers] = useState([]);
 
@@ -96,8 +100,6 @@ export const AuthProvider = ({ children }) => {
     });
     sessionStorage.setItem("loginInfo", JSON.stringify(loginInfo));
     sessionStorage.setItem("tokens", JSON.stringify(tokens));
-    console.log(JSON.stringify(tokens));
-    console.log(JSON.stringify(loginInfo));
 
     toast.success("로그인 되었습니다.");
     navi("/");
