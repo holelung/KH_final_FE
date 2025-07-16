@@ -48,7 +48,6 @@ const BoardList = () => {
       apiService
         .get(`/boards?${searchParams.toString()}`)
         .then((res) => {
-          console.log(res);
           setBoardList(res.data.data.boardList);
           setStartButton(res.data.data.startButton);
           setEndButton(res.data.data.endButton);
@@ -82,7 +81,6 @@ const BoardList = () => {
     apiService
       .get(`/boards?${searchParams.toString()}`)
       .then((res) => {
-        console.log(res.data);
         setBoardList(res.data.data.boardList);
         setStartButton(res.data.data.startButton);
         setEndButton(res.data.data.endButton);

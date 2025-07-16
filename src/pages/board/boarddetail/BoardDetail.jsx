@@ -5,6 +5,8 @@ import { apiService } from "../../../api/apiService";
 import { AuthContext } from "../../../Context/AuthContext";
 import { toast } from "react-toastify";
 import Loading from "../../../Components/Loading/Loading";
+import { number } from "prop-types";
+import axios from "axios";
 
 const BoardDetail = () => {
   const [type, setType] = useState("");
@@ -32,7 +34,7 @@ const BoardDetail = () => {
 
   useEffect(() => {
     setType(searchParams.get("type"));
-    setBoardId(searchParams.get("boardId"));
+    setBoardId(Number(searchParams.get("boardId")));
   }, [searchParams]);
 
   useEffect(() => {
@@ -79,9 +81,19 @@ const BoardDetail = () => {
     }
   }, [type, boardId, commentPage, commentSub]);
 
-  //   const handleDeleteBoard = (e) => {
-  //     apiService.delete(`/boards`, { type: type, boardId: boardId, userId: userId });
-  //   };
+  const handleDeleteBoard = (e) => {
+    if (!window.confirm("게시물을 삭제 하시겠습니까?")) {
+      return;
+    }
+    apiService
+      .delete(`/boards?type=${type}&boardId=${boardId}&userId=${userId}`)
+      .then((res) => {
+        navi(`/boards?type=${type}&page=1`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleCommentContent = (e) => {
     setCommentContent(e.target.value);
@@ -111,6 +123,21 @@ const BoardDetail = () => {
     }
   };
 
+  const handleDeleteComment = (e) => {
+    if (!window.confirm("댓글을 삭제 하시겠습니까?")) {
+      return;
+    }
+    const commentId = Number(e.target.id.substr(12));
+    apiService
+      .delete(`/comments?type=${type}&boardId=${boardId}&commentId=${commentId}&userId=${userId}`)
+      .then((res) => {
+        setCommentSub(!commentSub);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       {isLoading ? <Loading /> : <></>}
@@ -122,13 +149,16 @@ const BoardDetail = () => {
               <div className="flex gap-2">
                 <button
                   type="button"
+                  onClick={() =>
+                    navi("/boards/edit", { state: { type: type, boardId: boardId, userId: userId, title: title, content: content, isUpdate: true } })
+                  }
                   className="h-full px-2 font-PyeojinGothicM text-lg text-white bg-yellow-400 hover:bg-yellow-300 rounded-sm cursor-pointer"
                 >
                   수정
                 </button>
                 <button
                   type="button"
-                  //   onClick={() => handleDeleteBoard()}
+                  onClick={() => handleDeleteBoard()}
                   className="h-full px-2 font-PyeojinGothicM text-lg text-white bg-red-500 hover:bg-red-400 rounded-sm cursor-pointer"
                 >
                   삭제
@@ -199,10 +229,14 @@ const BoardDetail = () => {
                     </div>
                     {auth.loginInfo.id == comment.userId ? (
                       <div className="flex gap-2">
-                        <button type="button" className="h-full px-2 text-white bg-yellow-400 hover:bg-yellow-300 rounded-sm cursor-pointer">
-                          수정
-                        </button>
-                        <button type="button" className="h-full px-2 text-white bg-red-500 hover:bg-red-400 rounded-sm cursor-pointer">
+                        <button
+                          id={"DeleteButton" + comment.id}
+                          type="button"
+                          onClick={(e) => {
+                            handleDeleteComment(e);
+                          }}
+                          className="h-full px-2 text-white bg-red-500 hover:bg-red-400 rounded-sm cursor-pointer"
+                        >
                           삭제
                         </button>
                       </div>

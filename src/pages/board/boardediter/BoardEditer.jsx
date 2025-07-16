@@ -7,8 +7,11 @@ import { toast } from "react-toastify";
 
 const BoardEditer = () => {
   const [type, setType] = useState("");
+  const [boardId, setBoardId] = useState("");
+  const [userId, setUserId] = useState("");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [isUpdate, setIsUpdate] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);
   const [attachedFiles, setAttachedFiles] = useState([]);
 
@@ -19,17 +22,27 @@ const BoardEditer = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(content);
-    console.log(imageFiles);
-    console.log(attachedFiles);
-  }, [content, imageFiles, attachedFiles]);
-
-  useEffect(() => {
     if (!location.state) {
       toast.error("잘못된 접근 입니다.");
       navi(-1);
+      return;
     }
-    setType(location.state.type);
+    const type = location.state.type;
+    const boardId = location.state.boardId;
+    const userId = location.state.userId;
+    const title = location.state.title;
+    const content = location.state.content;
+    const isUpdate = location.state.isUpdate;
+    if (type) {
+      setType(type);
+    }
+    if (boardId && userId && title && content && isUpdate) {
+      setBoardId(boardId);
+      setUserId(userId);
+      setTitle(title);
+      setContent(content);
+      setIsUpdate(isUpdate);
+    }
   }, []);
 
   useEffect(() => {
@@ -158,14 +171,23 @@ const BoardEditer = () => {
     setContent(e);
   };
 
+  const handleUpdateSubmit = (e) => {
+    e.preventDefault();
+    apiService
+      .put(`/boards`, { type: type, boardId: boardId, userId: userId, title: title, content: content })
+      .then((res) => {
+        navi(`/boards/detail?type=${type}&boardId=${boardId}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(type);
     apiService
       .post(`/boards`, { type: type, title: title, content: content, imageFiles: imageFiles })
       .then((res) => {
-        console.log(res);
-        console.log(type);
         navi(`/boards/detail?type=${type}&boardId=${res.data.data}`);
       })
       .catch((err) => {
@@ -174,52 +196,56 @@ const BoardEditer = () => {
   };
 
   return (
-    <>
-      <div className="w-full min-h-full flex flex-col justify-between gap-2">
-        <section className="h-max flex flex-col gap-2">
-          <div className="ml-1 font-PyeojinGothicB text-3xl text-saintrablack">게시물 작성</div>
+    <div className="w-full min-h-full flex flex-col justify-between gap-2">
+      <section className="h-max flex flex-col gap-2">
+        <div className="ml-1 font-EliceDigitalBaeumB text-3xl text-saintrablack">게시물 작성</div>
+        <div>
+          <input
+            value={title}
+            onChange={handleTitle}
+            type="text"
+            placeholder="제목"
+            className="w-full px-4 py-2 border-1 font-PyeojinGothicM border-gray-300"
+          />
+        </div>
+        {attachedFiles.length > 0 && (
           <div>
-            <input
-              value={title}
-              onChange={handleTitle}
-              type="text"
-              placeholder="제목"
-              className="w-full px-4 py-2 border-1 font-PyeojinGothicM border-gray-300"
-            />
+            <h3>첨부파일 목록</h3>
+            <ul>
+              {attachedFiles.map((file) => (
+                <li key={file.id}>
+                  {file.name}
+                  <button onClick={() => setAttachedFiles(attachedFiles.filter((f) => f.id !== file.id))}>삭제</button>
+                </li>
+              ))}
+            </ul>
           </div>
-          {attachedFiles.length > 0 && (
-            <div>
-              <h3>첨부파일 목록</h3>
-              <ul>
-                {attachedFiles.map((file) => (
-                  <li key={file.id}>
-                    {file.name}
-                    <button onClick={() => setAttachedFiles(attachedFiles.filter((f) => f.id !== file.id))}>삭제</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <ReactQuill ref={quillRef} value={content} onChange={handleContent} modules={customModules} theme="snow" className="quill-editor" />
-        </section>
-        <section>
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={() => {
-                navi(-1);
-              }}
-              type="button"
-              className="px-2 py-1 bg-saintrablack text-white text-lg rounded-sm"
-            >
-              돌아가기
+        )}
+        <ReactQuill ref={quillRef} value={content} onChange={handleContent} modules={customModules} theme="snow" className="quill-editor" />
+      </section>
+      <section>
+        <div className="flex justify-end gap-2 font-PyeojinGothicM">
+          <button
+            onClick={() => {
+              navi(-1);
+            }}
+            type="button"
+            className="px-2 py-1 bg-slate-600 hover:bg-slate-500 text-white text-lg rounded-sm cursor-pointer"
+          >
+            돌아가기
+          </button>
+          {isUpdate ? (
+            <button onClick={handleUpdateSubmit} className="px-2 py-1 bg-yellow-400 hover:bg-yellow-300 text-white text-lg rounded-sm cursor-pointer">
+              수정
             </button>
-            <button onClick={handleSubmit} className="px-2 py-1 bg-saintragreen text-white text-lg rounded-sm">
+          ) : (
+            <button onClick={handleSubmit} className="px-2 py-1 bg-green-300 hover:bg-green-400 text-white text-lg rounded-sm cursor-pointer">
               작성
             </button>
-          </div>
-        </section>
-      </div>
-    </>
+          )}
+        </div>
+      </section>
+    </div>
   );
 };
 

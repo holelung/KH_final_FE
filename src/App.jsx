@@ -48,7 +48,6 @@ function App() {
         >
           <Route path="/" element={<></>} />
           <Route path="/test" element={<Test />} />
-          <Route path="/boards" element={<BoardList />} />
           <Route path="/calendar" element={<UnifiedCalendar />} />
           <Route path="/calendar/write" element={<CalendarForm />} />
           <Route path="/meetingroom" element={<MeetingRoomCalendar />} />
