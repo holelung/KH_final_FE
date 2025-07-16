@@ -5,6 +5,8 @@ import { apiService } from "../../../api/apiService";
 import { AuthContext } from "../../../Context/AuthContext";
 import { toast } from "react-toastify";
 import Loading from "../../../Components/Loading/Loading";
+import { number } from "prop-types";
+import axios from "axios";
 
 const BoardDetail = () => {
   const [type, setType] = useState("");
@@ -30,11 +32,9 @@ const BoardDetail = () => {
 
   const navi = useNavigate();
 
-  useEffect(() => {}, [isLoading]);
-
   useEffect(() => {
     setType(searchParams.get("type"));
-    setBoardId(searchParams.get("boardId"));
+    setBoardId(Number(searchParams.get("boardId")));
   }, [searchParams]);
 
   useEffect(() => {
@@ -81,6 +81,20 @@ const BoardDetail = () => {
     }
   }, [type, boardId, commentPage, commentSub]);
 
+  const handleDeleteBoard = (e) => {
+    if (!window.confirm("게시물을 삭제 하시겠습니까?")) {
+      return;
+    }
+    apiService
+      .delete(`/boards?type=${type}&boardId=${boardId}&userId=${userId}`)
+      .then((res) => {
+        navi(`/boards?type=${type}&page=1`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const handleCommentContent = (e) => {
     setCommentContent(e.target.value);
   };
@@ -109,40 +123,65 @@ const BoardDetail = () => {
     }
   };
 
+  const handleDeleteComment = (e) => {
+    if (!window.confirm("댓글을 삭제 하시겠습니까?")) {
+      return;
+    }
+    const commentId = Number(e.target.id.substr(12));
+    apiService
+      .delete(`/comments?type=${type}&boardId=${boardId}&commentId=${commentId}&userId=${userId}`)
+      .then((res) => {
+        setCommentSub(!commentSub);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       {isLoading ? <Loading /> : <></>}
-      <div className="w-full min-h-full flex flex-col gap-2">
+      <div className="w-full min-h-full flex flex-col gap-2 font-PyeojinGothicM">
         <section className="w-full flex flex-col gap-2">
-          <div className="w-full text-2xl flex justify-between items-center">
+          <div className="w-full flex justify-between items-center font-PyeojinGothicB text-slate-600 text-2xl">
             <div>{title ? title : "글 제목"}</div>
-            {/* {userId == auth.loginInfo.id ? (
-              <div className="flex gap-1">
-                <button type="button" className="h-full px-2 text-lg text-white bg-yellow-300 rounded-sm">
+            {userId == auth.loginInfo.id ? (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    navi("/boards/edit", { state: { type: type, boardId: boardId, userId: userId, title: title, content: content, isUpdate: true } })
+                  }
+                  className="h-full px-2 font-PyeojinGothicM text-lg text-white bg-yellow-400 hover:bg-yellow-300 rounded-sm cursor-pointer"
+                >
                   수정
                 </button>
-                <button type="button" className="h-full px-2 text-lg text-white bg-red-500 rounded-sm">
+                <button
+                  type="button"
+                  onClick={() => handleDeleteBoard()}
+                  className="h-full px-2 font-PyeojinGothicM text-lg text-white bg-red-500 hover:bg-red-400 rounded-sm cursor-pointer"
+                >
                   삭제
                 </button>
               </div>
             ) : (
               <></>
-            )} */}
+            )}
           </div>
           <div className="w-full flex justify-end gap-2">
             {type === "anonymous" ? (
               ""
             ) : (
               <>
-                <div>작성자 |</div>
-                <div className="text-gray-500">{realname && username ? `${realname}(${username})` : "작성자"}</div>
+                <div className="text-slate-900">작성자 |</div>
+                <div className="text-slate-600">{realname && username ? `${realname}(${username})` : "작성자"}</div>
               </>
             )}
-            <div>작성일 |</div>
-            <div className="text-gray-500">{createDate ? createDate : "작성일"}</div>
+            <div className="text-slate-900">작성일 |</div>
+            <div className="text-slate-600">{createDate ? createDate : "작성일"}</div>
           </div>
         </section>
-        <section className="w-full px-2 py-4 border-y-2 border-saintragray">
+        <section className="w-full min-h-[25rem] px-2 py-4 border-y-2 border-slate-300 text-slate-900">
           <div>{content ? parse(content) : "글 내용"}</div>
         </section>
         <section className="w-full flex flex-col gap-2">
@@ -152,30 +191,30 @@ const BoardDetail = () => {
               onChange={handleCommentContent}
               type="text"
               placeholder="댓글 내용을 입력 하세요."
-              className="w-5/6 h-24 p-2 border-2 border-saintragray rounded-md resize-none"
+              className="w-5/6 h-24 p-2 border-2 border-slate-300 rounded-md resize-none"
             />
-            <button onClick={handleCommentSubmit} type="button" className="w-1/6 bg-saintragreen rounded-md text-xl">
+            <button onClick={handleCommentSubmit} type="button" className="w-1/6 bg-green-300 hover:bg-green-400 rounded-md text-2xl text-white cursor-pointer">
               등록
             </button>
           </div>
           {commentList.length > 0 ? (
             commentList.map((comment) =>
               type === "anonymous" ? (
-                <div key={comment.id} className="w-full border-t-2 border-saintragray flex-col gap-2">
-                  <div className="px-2 py-1 text-lg border-b-1 border-saintragray flex justify-between">
+                <div key={comment.id} className="w-full border-t-2 border-slate-300 flex-col gap-2">
+                  <div className="px-2 py-1 text-lg border-b-1 border-slate-300 flex justify-between">
                     <div>익명의 댓글</div>
-                    {/* {auth.loginInfo.id == comment.userId ? (
+                    {auth.loginInfo.id == comment.userId ? (
                       <div className="flex gap-1">
-                        <button type="button" className="h-full px-2 text-white bg-yellow-300 rounded-sm">
+                        <button type="button" className="h-full px-2 text-white bg-yellow-400 hover:bg-yellow-300 rounded-sm cursor-pointer">
                           수정
                         </button>
-                        <button type="button" className="h-full px-2 text-white bg-red-500 rounded-sm">
+                        <button type="button" className="h-full px-2 text-white bg-red-500 hover:bg-red-400 rounded-sm cursor-pointer">
                           삭제
                         </button>
                       </div>
                     ) : (
                       <></>
-                    )} */}
+                    )}
                   </div>
                   <div className="px-3 py-1 flex justify-between">
                     <div>{comment.content}</div>
@@ -183,25 +222,29 @@ const BoardDetail = () => {
                   </div>
                 </div>
               ) : (
-                <div key={comment.id} className="w-full border-t-2 border-saintragray flex-col gap-2">
-                  <div className="px-2 py-1 text-lg border-b-1 border-saintragray flex justify-between">
+                <div key={comment.id} className="w-full border-t-2 border-slate-300 flex-col gap-2">
+                  <div className="px-2 py-1 text-lg border-b-1 border-slate-300 text-slate-900 flex justify-between">
                     <div>
                       {comment.realname}({comment.username})
                     </div>
-                    {/* {auth.loginInfo.id == comment.userId ? (
-                      <div className="flex gap-1">
-                        <button type="button" className="h-full px-2 text-white bg-yellow-300 rounded-sm">
-                          수정
-                        </button>
-                        <button type="button" className="h-full px-2 text-white bg-red-500 rounded-sm">
+                    {auth.loginInfo.id == comment.userId ? (
+                      <div className="flex gap-2">
+                        <button
+                          id={"DeleteButton" + comment.id}
+                          type="button"
+                          onClick={(e) => {
+                            handleDeleteComment(e);
+                          }}
+                          className="h-full px-2 text-white bg-red-500 hover:bg-red-400 rounded-sm cursor-pointer"
+                        >
                           삭제
                         </button>
                       </div>
                     ) : (
                       <></>
-                    )} */}
+                    )}
                   </div>
-                  <div className="px-3 py-1 flex justify-between">
+                  <div className="px-3 py-1 flex justify-between text-slate-900">
                     <div>{comment.content}</div>
                     <div>{comment.createDate}</div>
                   </div>
@@ -209,31 +252,27 @@ const BoardDetail = () => {
               )
             )
           ) : (
-            <div className="w-full border-t-2 border-saintragray flex-col gap-2">
-              <div className="px-2 py-1 border-b-1 border-saintragray text-lg">댓글이 없습니다.</div>
+            <div className="w-full border-t-2 border-slate-300 flex-col gap-2">
+              <div className="px-2 py-1 border-b-1 border-slate-300 text-slate-900 text-lg">댓글이 없습니다.</div>
               <div className="px-2 py-1 flex justify-between"></div>
             </div>
           )}
-          <div className="mr-1 text-gray-500 flex justify-center gap-1">
+          <div className="mr-1 text-slate-600 flex justify-center gap-1">
             {startButton === 1 ? (
               <></>
             ) : (
-              <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center cursor-pointer">이전</div>
+              <div className="w-12 h-9 border-2 border-slate-600 rounded-sm flex justify-center items-center cursor-pointer">이전</div>
             )}
             {[...Array(parseInt(maxPage))].map((n, index) => (
               <div
                 key={index}
                 onClick={handleCommentPage}
-                className={`size-9 border-2 border-gray-500 rounded-sm flex justify-center items-center cursor-pointer ${commentPage == index + 1 ? `bg-saintrablue` : ``}`}
+                className={`size-9 border-2 rounded-sm flex justify-center items-center cursor-pointer ${commentPage == index + 1 ? `bg-slate-300` : ``}`}
               >
                 {index + 1}
               </div>
             ))}
-            {endButton === maxPage ? (
-              <div className="w-12 h-9 border-2 border-gray-500 rounded-sm flex justify-center items-center cursor-pointer">다음</div>
-            ) : (
-              <></>
-            )}
+            {endButton === maxPage ? <div className="w-12 h-9 border-2 rounded-sm flex justify-center items-center cursor-pointer">다음</div> : <></>}
           </div>
         </section>
       </div>
